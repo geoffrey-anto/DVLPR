@@ -1,4 +1,4 @@
 // Implement User Enitity/ObjectType --Done
 // Resolver from User Entity/ObjectType --Done
 // @Query() --- getUser getUserById --Done
-// @Mutation() --- createUser changeUserName changeUserEmail changeUserPassword deleteUser
+// @Mutation() --- createUser changeUserName changeUserEmail changeUserPassword deleteUser --Done

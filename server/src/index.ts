@@ -4,10 +4,7 @@ import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { DataSource } from "typeorm";
 import { RegisterResolver } from "./modules/user/UserResolver";
-
-const corsOptions = {
-  origin: ["https://www.your-app.example", "https://studio.apollographql.com"],
-};
+import cookieParser = require("cookie-parser")
 
 const main = async () => {
   const AppDataSource = new DataSource({
@@ -30,16 +27,29 @@ const main = async () => {
 
   const app = express();
 
+  app.use(cookieParser())
+
   const schema = await buildSchema({
     resolvers: [RegisterResolver],
   });
   const server = new ApolloServer({
     schema,
+    context: ({ req, res }) => ({ req, res }),
   });
 
   await server.start();
 
-  server.applyMiddleware({ app, cors: corsOptions });
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: [
+        "http://localhost:4000/graphql",
+        "https://studio.apollographql.com",
+      ],
+      credentials: true,
+      
+    },
+  });
 
   app.listen(4000, () => {
     console.log("Server Running on http://localhost:4000");

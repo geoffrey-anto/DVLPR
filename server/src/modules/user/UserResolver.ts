@@ -1,8 +1,9 @@
-// import { MyCtx } from "./../../../typings.d";
+require("dotenv").config()
+import { MyCtx, tokenResponse } from "./../../../typings.d";
 import { User } from "../../entity/User/User";
 import {
   Arg,
-  // Ctx,
+  Ctx,
   Field,
   InputType,
   Mutation,
@@ -10,7 +11,7 @@ import {
   Resolver,
 } from "type-graphql";
 import * as bcrypt from "bcrypt";
-// import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 
 const validateEmail = (email: string) => {
   return String(email)
@@ -96,58 +97,170 @@ class RegisterResolver {
   @Mutation(() => User, { nullable: true })
   async Login(
     @Arg("LoginInput") { email, password }: LoginInput,
-    // @Ctx() ctx: MyCtx
+    @Ctx() ctx: MyCtx
   ) {
     const user = await User.findOne({ where: { email } });
     if (user === null) {
       return null;
     }
-    
+
     const isAuthenticated = await bcrypt.compare(password, user.password);
-    
+
     if (isAuthenticated === false) return null;
-    
-    // const refreshToken = sign(
-    //   {
-    //     user_Id: user.id,
-    //     user_UserName: user.username,
-    //     user_Name: user.name,
-    //     user_Email: user.email,
-    //   },
-    //   "dhufhiuehiogahgoerjpgjriog",
-    //   {
-    //     expiresIn: "7d",
-    //   }
-    // );
 
-    // const acessToken = sign(
-    //   {
-    //     user_Id: user.id,
-    //     user_UserName: user.username,
-    //     user_Name: user.name,
-    //     user_Email: user.email,
-    //   },
-    //   "dhufhiuehiogahgoerjpgjriog",
-    //   {
-    //     expiresIn: "15min",
-    //   }
-    // );
+    const refreshToken = sign(
+      {
+        user_Id: user.id,
+        user_UserName: user.username,
+        user_Name: user.name,
+        user_Email: user.email,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "7d",
+      }
+    );
 
-    // try {
-    //   ctx?.res?.cookie("acess-token", acessToken, {
-    //     expires: new Date(Date.now() + 60 * 60 * 24 * 7),
-    //     httpOnly: true
-    //   });
-    //   ctx?.res?.cookie("refresh-token", refreshToken, {
-    //     expires: new Date(Date.now() + 60 * 15),
-    //     httpOnly: true
-    //   });
-    //   console.log("cookie")
-    // } catch(err) {
-    //   console.log(err);
-    // }
+    const accessToken = sign(
+      {
+        user_Id: user.id,
+        user_UserName: user.username,
+        user_Name: user.name,
+        user_Email: user.email,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "15min",
+      }
+    );
 
+    try {
+      ctx.res.cookie("access-token", accessToken, {
+        expires: new Date(Date.now() + 900000),
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
+      ctx.res.cookie("refresh-token", refreshToken, {
+        expires: new Date(Date.now() + 60 * 60 * 24 * 7 * 1000),
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
+      console.log("cookie");
+    } catch (err) {
+      console.log(err);
+    }
     return user;
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  async changeUsername(
+    @Arg("email") email: string,
+    @Arg("newUsername") newUsername: string,
+    @Ctx() ctx: MyCtx
+  ) {
+    if (ctx.req.cookies["access-token"] === undefined) {
+      return false;
+    }
+    const token: tokenResponse = verify(
+      ctx.req.cookies["access-token"],
+      process.env.JWT_SECRET as string
+    ) as tokenResponse;
+    if (email === token.user_Email) {
+      const user = await User.findOneBy({ email });
+      if (user === null) {
+        return false;
+      }
+      user.username = newUsername;
+      await user.save();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async deleteUser(
+    @Arg("email") email: string,
+    @Arg("password") password: string,
+    @Ctx() ctx: MyCtx
+  ): Promise<boolean> {
+    if (ctx.req.cookies["access-token"] === undefined) {
+      return false;
+    }
+    try {
+      const token: tokenResponse = verify(
+        ctx.req.cookies["access-token"],
+        process.env.JWT_SECRET as string
+      ) as tokenResponse;
+
+      const user = await User.findOneBy({ email });
+      if (user === null) {
+        return false;
+      }
+
+      if (user.email !== token.user_Email) {
+        return false;
+      }
+
+      const isValid = await bcrypt.compare(password, user.password);
+
+      if (isValid === false) {
+        return false;
+      }
+
+      await User.delete({ email });
+
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async changeUserPassword(
+    @Arg("email") email: string,
+    @Arg("oldPassword") oldPassword: string,
+    @Arg("newPassword") newPassword: string,
+    @Ctx() ctx: MyCtx
+  ): Promise<boolean> {
+    if (ctx.req.cookies["access-token"] === undefined) {
+      return false;
+    }
+    try {
+      const user = await User.findOneBy({ email });
+      if (user === null) {
+        return false;
+      }
+      const token: tokenResponse = verify(
+        ctx.req.cookies["access-token"],
+        process.env.JWT_SECRET as string
+      ) as tokenResponse;
+
+      if (token.user_Email !== email) {
+        return false;
+      }
+
+      const isValidOldPassword = await bcrypt.compare(
+        oldPassword,
+        user.password
+      );
+
+      if (!isValidOldPassword) return false;
+
+      const newPasswordHash = await bcrypt.hash(newPassword, 12);
+
+      user.password = newPasswordHash as string;
+
+      await user.save();
+
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   }
 }
 
