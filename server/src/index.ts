@@ -5,6 +5,7 @@ import { buildSchema } from "type-graphql";
 import { DataSource } from "typeorm";
 import { RegisterResolver } from "./modules/user/UserResolver";
 import cookieParser = require("cookie-parser")
+import { TweetResolver } from "./modules/tweet/TweetResolver";
 
 const main = async () => {
   const AppDataSource = new DataSource({
@@ -30,7 +31,7 @@ const main = async () => {
   app.use(cookieParser())
 
   const schema = await buildSchema({
-    resolvers: [RegisterResolver],
+    resolvers: [RegisterResolver, TweetResolver],
   });
   const server = new ApolloServer({
     schema,

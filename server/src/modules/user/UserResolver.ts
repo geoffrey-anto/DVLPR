@@ -50,15 +50,16 @@ class RegisterResolver {
   // Queries
   @Query(() => [User], { nullable: false })
   async getUsers(): Promise<User[]> {
-    const users = await User.find({});
+    const users = await User.find({relations: ["tweets"]});
     return users;
   }
 
   @Query(() => User, { nullable: true })
   async getUserById(@Arg("id") id: number): Promise<User | null> {
     try {
-      const user: User | null = await User.findOneBy({
-        id,
+      const user: User | null = await User.findOne({
+        where: {id},
+        relations: ["tweets"]
       });
       if (user !== null) {
         return user;
@@ -147,7 +148,6 @@ class RegisterResolver {
         sameSite: "none",
         secure: true,
       });
-      console.log("cookie");
     } catch (err) {
       console.log(err);
     }
