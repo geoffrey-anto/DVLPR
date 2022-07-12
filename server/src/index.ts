@@ -6,6 +6,7 @@ import { DataSource } from "typeorm";
 import { RegisterResolver } from "./modules/user/UserResolver";
 import cookieParser = require("cookie-parser")
 import { TweetResolver } from "./modules/tweet/TweetResolver";
+import { ReplyResolver } from "./modules/reply/ReplyResolver";
 
 const main = async () => {
   const AppDataSource = new DataSource({
@@ -31,7 +32,7 @@ const main = async () => {
   app.use(cookieParser())
 
   const schema = await buildSchema({
-    resolvers: [RegisterResolver, TweetResolver],
+    resolvers: [RegisterResolver, TweetResolver, ReplyResolver],
   });
   const server = new ApolloServer({
     schema,

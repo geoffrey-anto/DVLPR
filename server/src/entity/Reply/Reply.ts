@@ -15,13 +15,13 @@ class Reply extends BaseEntity {
   @Field(() => Int)
   id: number;
 
-  @Column(() => String)
-  @Field(() => String)
+  @Column({nullable: true})
+  @Field(() => String, {nullable: true})
   description: string;
 
-  @Column(() => String)
-  @Field(() => String)
-  likes: string;
+  @Column()
+  @Field(() => Int)
+  likes: number;
 
   @ManyToOne(() => Tweet, (tweet) => tweet.replies, { nullable: true })
   @Field(() => [Tweet], {nullable: true})

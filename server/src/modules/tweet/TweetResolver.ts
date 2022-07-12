@@ -28,24 +28,46 @@ class TweetInput {
 
 @Resolver(Tweet)
 class TweetResolver {
-  @Query(() => [Tweet], { nullable: true })
-  async getTweets(@Arg("id") id: number, @Ctx() ctx: MyCtx) {
+  @Query(() => [Tweet], {nullable: true})
+  async getAllTweets(@Ctx() ctx: MyCtx) {
     if (ctx.req.cookies["access-token"] === undefined) return null;
 
-    const token: tokenResponse = verify(
-      ctx.req.cookies["access-token"],
-      process.env.JWT_SECRET as string
-    ) as tokenResponse;
+    // const token: tokenResponse = verify(
+    //   ctx.req.cookies["access-token"],
+    //   process.env.JWT_SECRET as string
+    // ) as tokenResponse;
 
-    if (token.user_Id !== id) {
-      return null;
-    }
+    // if (token.user_Id !== id) {
+    //   return null;
+    // }
 
-    const user = await User.find({ where: { id }, relations: ["tweets"] });
+    const tweets = await Tweet.find({ relations: ["user"] });
 
-    if (user.length === 0) return null;
+    if (tweets.length === 0) return [];
 
-    return user[0].tweets;
+    return tweets;
+  }
+
+
+  @Query(() => [Tweet], { nullable: true })
+  async getTweetsForUser(@Arg("id") id: number, @Ctx() ctx: MyCtx) {
+    if (ctx.req.cookies["access-token"] === undefined) return null;
+
+    // const token: tokenResponse = verify(
+    //   ctx.req.cookies["access-token"],
+    //   process.env.JWT_SECRET as string
+    // ) as tokenResponse;
+
+    // if (token.user_Id !== id) {
+    //   return null;
+    // }
+
+    const tweets = await Tweet.find({
+      where: {userId: id},
+      relations: ["replies"]
+    })
+
+    return tweets;
   }
 
   @Mutation(() => Boolean)
@@ -78,6 +100,8 @@ class TweetResolver {
       0,
     ];
 
+    tweet.userId = user.id;
+
     tweet.user = user;
 
     await tweet.user.save();
@@ -91,18 +115,9 @@ class TweetResolver {
   async likeTweet(@Arg("id") id: number, @Ctx() ctx: MyCtx) {
     if (ctx.req.cookies["access-token"] === undefined) return false;
 
-    const token: tokenResponse = verify(
-      ctx.req.cookies["access-token"],
-      process.env.JWT_SECRET as string
-    ) as tokenResponse;
-
-    const tweet = await Tweet.findOne({ where: { id }, relations: ["user"] });
+    const tweet = await Tweet.findOne({ where: { id } });
 
     if (tweet === null) return false;
-
-    if (token.user_Id !== tweet.user.id) {
-      return false;
-    }
 
     tweet.likes += 1;
 
@@ -141,8 +156,6 @@ class TweetResolver {
       return false;
     }
 
-    if (tweet.user.id === userId) return false;
-
     const newTweet = new Tweet();
 
     [newTweet.description, newTweet.image, newTweet.user, newTweet.likes] = [
@@ -151,6 +164,8 @@ class TweetResolver {
       currUser,
       0,
     ];
+
+    newTweet.userId = userId;
 
     newTweet.isRepost = true;
 
