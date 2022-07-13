@@ -4,6 +4,8 @@
 
 /* tailwind custom color */
 
-.glow{
-    text-shadow: 0 0 10px #fff;
+@layer utilities {
+    .setColorWhite{
+        color: #fff;
+    }
 }

@@ -16,6 +16,8 @@ class Tweet extends BaseEntity{
     @PrimaryGeneratedColumn()
     @Field(() => Int)
     id: number;
+
+    // Put Created At TimeStamp
     
     @Column()
     @Field(() => String)

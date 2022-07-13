@@ -9,7 +9,7 @@ import TweetButton from "./TweetButton";
 
 function TweetBox() {
   return (
-    <div className="bg-black w-full h-fit">
+    <div className="bg-black w-full h-fit pb-4">
       <div className="w-full flex flex-row items-center justify-between text-textWhiteH px-8 py-4">
         <p className="text-2xl font-bold">Home</p>
         <div className="h-10 w-10 sm:h-8 sm:w-8">

@@ -11,8 +11,11 @@ module.exports = {
       textWhite: "#C4C5C6",
       black: "#000000",
       gray100: "#2F3336",
-      twitterBlue: "#1D9BF0"
+      twitterBlue: "#1D9BF0",
+      accentGray: "#64686D",
     }
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar-hide'),
+  ],
 };
