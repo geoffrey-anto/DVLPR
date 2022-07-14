@@ -36,6 +36,10 @@ class Tweet extends BaseEntity{
     isRepost: boolean;
 
     @Column({nullable: true})
+    @Field(() => Int, {nullable: true})
+    repostCount: number;
+
+    @Column({nullable: true})
     userId: number;
     
     @OneToMany(() => Reply, (reply) => reply.tweet, { nullable: true })

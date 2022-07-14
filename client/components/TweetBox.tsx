@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { ADD_TWEET } from "../graphql/Mutation";
+import { GET_ALL_TWEETS } from "../graphql/Query";
 import TweetButton from "./TweetButton";
 
 function TweetBox() {
@@ -36,8 +37,8 @@ function TweetBox() {
           isRepost: false,
         },
       },
+      refetchQueries: [GET_ALL_TWEETS, "getTweets"],
     });
-    console.log(response);
     if (response.data.addTweet) {
       toast("Tweeted Successfully", {
         duration: 2000,
@@ -75,7 +76,7 @@ function TweetBox() {
               inputMode="text"
               style={{ textTransform: "capitalize" }}
               onChange={(e) => setDescription(e.target.value)}
-              className="bg-black w-full h-16 lg:h-20 text-textWhiteH border-textWhiteH border-b-2 font-semibold text-lg focus:outline-none focus:border-b-textWhiteH caret-twitterBlue px-4"
+              className="bg-black w-full h-14 lg:h-16 text-textWhiteH border-textWhiteH border-b-2 font-semibold text-lg focus:outline-none focus:border-b-textWhiteH caret-twitterBlue px-4"
             />
             <div className="flex items-center justify-between">
               <div

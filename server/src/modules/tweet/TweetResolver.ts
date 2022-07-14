@@ -55,6 +55,18 @@ class TweetResolver {
     return tweets;
   }
 
+  @Query(() => Tweet, {nullable: true})
+  async getTweetById(@Arg("tweetId") id: number, @Ctx() ctx: MyCtx){
+    if (ctx.req.cookies["access-token"] === undefined) return null;
+
+    const tweet = await Tweet.findOne({
+      where: { id: id },
+      relations: ["user"],
+    });
+
+    return tweet;
+  }
+
   @Query(() => [Tweet], { nullable: true })
   async getTweetsForUser(@Arg("id") id: number, @Ctx() ctx: MyCtx) {
     if (ctx.req.cookies["access-token"] === undefined) return null;
@@ -162,6 +174,8 @@ class TweetResolver {
       return false;
     }
 
+    if(tweet.user.id === userId) return false;
+
     const newTweet = new Tweet();
 
     [newTweet.description, newTweet.image, newTweet.user, newTweet.likes] = [
@@ -170,6 +184,12 @@ class TweetResolver {
       currUser,
       0,
     ];
+
+    tweet.repostCount = tweet.repostCount !== null ? tweet.repostCount + 1 : 1;
+
+    await tweet.save();
+
+    newTweet.repostCount = 0;
 
     newTweet.userId = userId;
 

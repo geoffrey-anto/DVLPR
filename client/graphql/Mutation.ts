@@ -24,3 +24,9 @@ export const ADD_TWEET = gql`
     addTweet(tweetInput: $tweetInput, id: $addTweetId)
   }
 `;
+
+export const RETWEET_TWEET = gql`
+  mutation ($userId: Float!, $tweetId: Float!) {
+    retweetTweet(userId: $userId, tweetId: $tweetId)
+  }
+`;
