@@ -1,10 +1,17 @@
-import { DotsHorizontalIcon, HeartIcon, RefreshIcon, ReplyIcon, ShareIcon } from "@heroicons/react/outline";
+import {
+  DotsHorizontalIcon,
+  HeartIcon,
+  RefreshIcon,
+  ReplyIcon,
+  ShareIcon,
+} from "@heroicons/react/outline";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tweet } from "./TweetFeed";
 // import "../public/./color.css"
 // import color.css
 
-function Feed() {
+function Feed({ tweet }: { tweet: Tweet }) {
   return (
     <div className="w-full h-fit scrollbar-hide p-4 flex flex-col items-center">
       <div className="w-full h-auto flex flex-row items-center justify-between px-4 font-mono">
@@ -12,11 +19,11 @@ function Feed() {
         <div className="text-textWhiteH w-fit flex flex-row items-center justify-start gap-4">
           <img
             className="h-14 w-14 rounded-full"
-            src="https://img.freepik.com/free-photo/close-up-young-successful-man-smiling-camera-standing-casual-outfit-against-blue-background_1258-66609.jpg?w=2000"
+            src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
           />
           <div className="flex flex-col font-semibold">
-            <p>Ignite_30</p>
-            <p>@Geoffrey</p>
+            <p>{tweet.user?.name}</p>
+            <p>@{tweet.user?.username}</p>
           </div>
         </div>
 
@@ -27,20 +34,13 @@ function Feed() {
       </div>
       <div className="text-textWhiteH flex flex-col p-6 text-lg lg:text-xl font-light lg:font-light font-sans">
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum
-          dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit
-          amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur
-          adipiscing elit. consectetur adipiscing elit. Lorem ipsum dolor sit
-          amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit. consectetur adipiscing elit. Lorem ipsum
-          dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit
-          amet, consectetur adipiscing elit.
+          {tweet.description}
         </p>
       </div>
       <img
         className="h-[55%]"
-        src="https://bs-uploads.toptal.io/blackfish-uploads/components/blog_post_page/content/cover_image_file/cover_image/687822/retina_1708x683_cover-react-context-api-4929b3703a1a7082d99b53eb1bbfc31f.png"
+        src={tweet.image}
+        alt=""
       />
       <div className="w-full mt-2 border-b-2 border-b-gray100">
         <p className="text-accentGray my-4">
@@ -60,7 +60,7 @@ function Feed() {
             <ReplyIcon />
           </div>
           <div className="h-6 w-6 cursor-pointer">
-          <RefreshIcon />
+            <RefreshIcon />
           </div>
           <div className="h-6 w-6 cursor-pointer">
             <HeartIcon />

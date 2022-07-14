@@ -9,7 +9,7 @@ function LoginAuthPrompt({
   cb,
 }: {
   style: string;
-  cb: (isAuthenticated: authStatusType) => void;
+  cb: (isAuthenticated: authStatusType, data: any|undefined) => void;
 }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -31,7 +31,10 @@ function LoginAuthPrompt({
       },
     });
     if (response.data.Login !== null) {
-      cb("logged");
+      localStorage.setItem("authId", response.data.Login.id);
+      localStorage.setItem("authUserName", response.data.Login.name);
+      localStorage.setItem("authName", response.data.Login.username);
+      cb("logged", response.data.Login);
     } else {
       alert("Please Enter Valid Details");
     }
@@ -39,17 +42,19 @@ function LoginAuthPrompt({
 
   return (
     <div className={`${style} h-full bg-black z-50 opacity-100`}>
-      <div className="flex items-center px-8 ">
+      <div className="flex items-center px-8">
         <div
           onClick={() => {
-            cb(null);
+            cb(null, undefined);
           }}
-          className=" cursor-pointer flex"
+          className="cursor-pointer flex"
         >
           <div className="text-textWhiteH w-8 h-8 mt-4">
             <ArrowLeftIcon />
           </div>
-          <p className="text-textWhiteH ml-4  mt-4 font-bold text-xl">Register</p>
+          <p className="text-textWhiteH ml-4  mt-4 font-bold text-xl">
+            Register
+          </p>
         </div>
       </div>
       <form className="w-2/3 h-2/3 md:w-[50%] lg:w-1/3 bg-textWhiteH opacity-100 ml-auto mr-auto mt-[8%] rounded-lg flex flex-col items-center justify-evenly">

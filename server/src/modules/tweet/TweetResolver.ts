@@ -28,7 +28,7 @@ class TweetInput {
 
 @Resolver(Tweet)
 class TweetResolver {
-  @Query(() => [Tweet], {nullable: true})
+  @Query(() => [Tweet], { nullable: true })
   async getAllTweets(@Ctx() ctx: MyCtx) {
     if (ctx.req.cookies["access-token"] === undefined) return null;
 
@@ -41,13 +41,19 @@ class TweetResolver {
     //   return null;
     // }
 
-    const tweets = await Tweet.find({ relations: ["user"] });
+    const tweets = await Tweet.find({
+      relations: ["user"],
+      order: {
+        id: {
+          direction: "DESC",
+        },
+      },
+    });
 
     if (tweets.length === 0) return [];
 
     return tweets;
   }
-
 
   @Query(() => [Tweet], { nullable: true })
   async getTweetsForUser(@Arg("id") id: number, @Ctx() ctx: MyCtx) {
@@ -63,9 +69,9 @@ class TweetResolver {
     // }
 
     const tweets = await Tweet.find({
-      where: {userId: id},
-      relations: ["replies"]
-    })
+      where: { userId: id },
+      relations: ["replies"],
+    });
 
     return tweets;
   }
@@ -196,12 +202,12 @@ class TweetResolver {
       return false;
     }
 
-    if(tweet.replies !== undefined){
-        for (let i = 0; i < tweet.replies.length; i++) {
-          await Reply.delete({ id: tweet.replies[i].id });
-        }
+    if (tweet.replies !== undefined) {
+      for (let i = 0; i < tweet.replies.length; i++) {
+        await Reply.delete({ id: tweet.replies[i].id });
+      }
     }
-    await Tweet.delete({id: tweet.id});
+    await Tweet.delete({ id: tweet.id });
 
     return true;
   }

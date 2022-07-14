@@ -10,7 +10,11 @@ import { DesktopComputerIcon } from "@heroicons/react/outline";
 import NavComponent from "./NavComponent";
 import TweetButton from "./TweetButton";
 
-const SideBar = () => {
+interface Props {
+  userDetails: any;
+}
+
+const SideBar = ({userDetails}: Props) => {
   return (
     <div className="hidden sm:w-[29%] md:w-[28%] lg:w-[20%] xl:1/4 h-full border-r-2 border-gray100 font-mono sm:flex sm:flex-col">
       <div className="w-full h-[17%]">
@@ -36,13 +40,13 @@ const SideBar = () => {
       </div>
       <div className="w-full h-[18%] flex flex-row justify-evenly items-center">
         <img
-          src="https://img.freepik.com/free-photo/close-up-young-successful-man-smiling-camera-standing-casual-outfit-against-blue-background_1258-66609.jpg?w=2000"
+          src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
           alt=""
           className="rounded-full h-[40%]"
         />
         <div className="flex flex-col justify-evenly items-start">
-          <p className="text-textWhiteH">Name</p>
-          <p className="text-textWhiteH">Username</p>
+          <p className="text-textWhiteH text-lg font-bold">@{userDetails?.username || ""}</p>
+          <p className="text-textWhiteH text-md">{userDetails?.name || ""}</p>
         </div>
       </div>
     </div>

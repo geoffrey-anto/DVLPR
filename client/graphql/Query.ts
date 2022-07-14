@@ -1,6 +1,17 @@
 import { gql } from "@apollo/client";
 
-
-export const LOGIN_USER = gql`
-    
-`
+export const GET_ALL_TWEETS = gql`
+  query {
+    getAllTweets {
+      id
+      description
+      image
+      isRepost
+      user {
+        name
+        username
+        id
+      }
+    }
+  }
+`;
