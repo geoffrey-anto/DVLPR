@@ -35,6 +35,7 @@ function LoginAuthPrompt({
       localStorage.setItem("authUserName", response.data.Login.name);
       localStorage.setItem("authName", response.data.Login.username);
       cb("logged", response.data.Login);
+      window.location.reload();
     } else {
       alert("Please Enter Valid Details");
     }

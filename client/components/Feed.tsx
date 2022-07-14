@@ -6,12 +6,12 @@ import {
   ShareIcon,
 } from "@heroicons/react/outline";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tweet } from "./TweetFeed";
-// import "../public/./color.css"
-// import color.css
+import { LIKE_TWEET } from "../graphql/Query";
+import { useMutation } from "@apollo/client";
 
 function Feed({ tweet }: { tweet: Tweet }) {
+  const [likeTweet, { data, error, loading }] = useMutation(LIKE_TWEET);
   return (
     <div className="w-full h-fit scrollbar-hide p-4 flex flex-col items-center">
       <div className="w-full h-auto flex flex-row items-center justify-between px-4 font-mono">
@@ -51,7 +51,7 @@ function Feed({ tweet }: { tweet: Tweet }) {
         <div className="w-[70%] md:w-[80%] lg:w-[60%] flex items-center justify-around">
           <p>329 Retweets</p>
           <p>5 Quote Tweets</p>
-          <p>8,613 Likes</p>
+          <p>{tweet.likes} Likes</p>
         </div>
       </div>
       <div className="w-full h-fit mt-4 pb-4 px-8 text-textWhite border-b-2 border-b-gray100">
@@ -63,7 +63,10 @@ function Feed({ tweet }: { tweet: Tweet }) {
             <RefreshIcon />
           </div>
           <div className="h-6 w-6 cursor-pointer">
-            <HeartIcon />
+            <p className="text-textWhiteH"></p>
+            <HeartIcon onClick={async () => {
+              await likeTweet({ variables: { likeTweetId: tweet.id } });
+            }}/>
           </div>
           <div className="h-6 w-6 cursor-pointer">
             <ShareIcon />

@@ -1,4 +1,5 @@
 import { ApolloError, useQuery } from "@apollo/client";
+import { useEffect, useState } from "react";
 import { GET_ALL_TWEETS } from "../graphql/Query";
 import Feed from "./Feed";
 import TweetBox from "./TweetBox";
@@ -13,6 +14,7 @@ export interface Tweet {
   description: string;
   id: number;
   image: string;
+  likes: number;
   isRepost: boolean;
   user: null | User;
 }
@@ -24,9 +26,16 @@ function TweetFeed() {
   const {
     loading,
     error,
-    data,
+    data: resp,
   }: { error?: ApolloError | undefined; loading?: boolean; data?: Data } =
     useQuery(GET_ALL_TWEETS);
+
+    const [data, setData] = useState<Data>();
+
+    useEffect(() => {
+      console.log("!");
+      setData(resp);
+    }, [resp]);
   return (
     <div className="bg-black w-full md:w-[50%] lg:w-[55%] xl:w-[58%] border border-r-gray100 overflow-x-scroll scrollbar-hide">
       <div className="sticky top-0">
