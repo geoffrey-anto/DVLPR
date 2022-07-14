@@ -13,6 +13,7 @@ module.exports = {
       gray100: "#2F3336",
       twitterBlue: "#1D9BF0",
       accentGray: "#64686D",
+      lightGray: "#E0E0E0",
     }
   },
   plugins: [

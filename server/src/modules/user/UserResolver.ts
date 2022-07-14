@@ -1,4 +1,4 @@
-require("dotenv").config()
+require("dotenv").config();
 import { MyCtx, tokenResponse } from "./../../../typings.d";
 import { User } from "../../entity/User/User";
 import {
@@ -50,7 +50,7 @@ class RegisterResolver {
   // Queries
   @Query(() => [User], { nullable: false })
   async getUsers(): Promise<User[]> {
-    const users = await User.find({relations: ["tweets"]});
+    const users = await User.find({ relations: ["tweets"] });
     return users;
   }
 
@@ -58,8 +58,8 @@ class RegisterResolver {
   async getUserById(@Arg("id") id: number): Promise<User | null> {
     try {
       const user: User | null = await User.findOne({
-        where: {id},
-        relations: ["tweets"]
+        where: { id },
+        relations: ["tweets"],
       });
       if (user !== null) {
         return user;
