@@ -1,72 +1,75 @@
-import { useMutation } from "@apollo/client";
+import { GraphQLNonNull } from "graphql";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-import AuthPrompt from "../components/AuthPrompt";
+import LoginAuthPrompt from "../components/LoginAuthPrompt";
+import RegisterAuthPrompt from "../components/RegisterAuthPrompt";
 import SideBar from "../components/SideBar";
 import TweetFeed from "../components/TweetFeed";
-import { LOGIN_USER_WITH_ID_NAME } from "../graphql/Mutation";
+
+export type authStatusType = "registered" | "logged" | null;
 
 const Home: NextPage = () => {
-  const [loginState, setLoginState] = useState<any>(null);
-
-  const [loginUser, { data, error, loading }] = useMutation(
-    LOGIN_USER_WITH_ID_NAME
-  );
-
-    const signOut = async () => {
+  const [loginState, setLoginState] = useState<authStatusType>(null);
+  const cb = (isAuthenticated: authStatusType) => {
+    if(isAuthenticated === null){
       setLoginState(null);
-    };
-
-  const loginUserHandler = async () => {
-    if (loginState !== null) {
-      signOut();
-      return;
-    }
-    try {
-      const data = await loginUser({
-        variables: {
-          loginInput: {
-            email: "sandask@njdsf.com",
-            password: "aaaaaa",
-          },
-        },
-      });
-      setLoginState(data.data.Login);
-      console.log(data);
-    } catch (err) {
-      console.log(err);
+    } else if (isAuthenticated === "registered") {
+      setLoginState("registered");
+    } else if (isAuthenticated === "logged") {
+      setLoginState(isAuthenticated);
+    } else {
+      console.log("Please Login Or Register");
     }
   };
-  if (loading) {
-    return (
-      <div className="w-screen h-screen bg-black flex items-center justify-center">
-        <p className="text-textWhiteH text-3xl">LOGGIN IN!</p>
-      </div>
-    );
-  } else {
-    return (
-      <>
-        <Head>
-          <title>Twitter</title>
-        </Head>
-        <div className="h-screen w-screen bg-black flex flex-row overflow-y-hidden">
-          <AuthPrompt style={loginState !== null ? "absolute left-0 right-0 top-0 bottom-0 text-center" : "hidden"}/>
-          <SideBar />
-          <TweetFeed />
-          <div className="hidden flex-1 md:flex justify-center pt-5">
-            <button
-              placeholder="SignIn"
-              className="w-1/2 max-h-10 rounded-2xl border-2 border-textWhiteH text-textWhite"
-              onClick={loginUserHandler}
-            >
-              {loginState === null ? "Sign In" : "Sign Out"}
-            </button>
-          </div>
+  return (
+    <>
+      <Head>
+        <title>Twitter</title>
+      </Head>
+      <div className="h-screen w-screen bg-black flex flex-row overflow-y-hidden">
+        {(() => {
+          if (loginState === null) {
+            return (
+              <RegisterAuthPrompt
+                cb={cb}
+                style={
+                  loginState === null
+                    ? "absolute left-0 right-0 top-0 bottom-0 text-center"
+                    : "hidden"
+                }
+              />
+            );
+          } else if (loginState === "registered") {
+            return (
+              <LoginAuthPrompt
+                cb={cb}
+                style={
+                  loginState === null || loginState === "registered"
+                    ? "absolute left-0 right-0 top-0 bottom-0 text-center"
+                    : "hidden"
+                }
+              />
+            );
+          } else {
+            return <div></div>;
+          }
+        })()}
+
+        <SideBar />
+        <TweetFeed />
+        <div className="hidden flex-1 md:flex justify-center pt-5">
+          <button
+            placeholder="SignIn"
+            className="w-1/2 max-h-10 rounded-2xl border-2 border-textWhiteH text-textWhite"
+            onClick={() => {setLoginState("registered")}}
+          >
+            {loginState === null ? "Sign In" : "Sign Out"}
+          </button>
         </div>
-      </>
-    );
-  }
+      </div>
+    </>
+  );
 };
 
 export default Home;
