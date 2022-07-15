@@ -118,6 +118,8 @@ class TweetResolver {
       0,
     ];
 
+    tweet.createdAt = new Date().toString();
+
     tweet.userId = user.id;
 
     tweet.user = user;
@@ -190,6 +192,8 @@ class TweetResolver {
     tweet.repostCount = tweet.repostCount !== null ? tweet.repostCount + 1 : 1;
 
     await tweet.save();
+
+    newTweet.createdAt = new Date().toString();
 
     newTweet.repostCount = 0;
 

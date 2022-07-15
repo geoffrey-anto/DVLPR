@@ -18,6 +18,9 @@ class Tweet extends BaseEntity{
     id: number;
 
     // Put Created At TimeStamp
+    @Column({nullable: true, default: new Date().toString()})
+    @Field(() => String, {nullable: true})
+    createdAt: string
     
     @Column()
     @Field(() => String)

@@ -12,9 +12,9 @@ import { useMutation } from "@apollo/client";
 import Link from "next/link";
 import { RETWEET_TWEET } from "../graphql/Mutation";
 import toast from "react-hot-toast";
+import { formatDate } from "../utils/FormatDate";
 
 function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
-  // Implement Like Checker
   const [likeTweet, { data, loading }] = useMutation(LIKE_TWEET, {
     refetchQueries: [{ query: GET_ALL_TWEETS }, "getAllTweets"],
   });
@@ -32,31 +32,30 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
     >
       <div className="w-full h-auto flex flex-row items-center justify-between px-4 font-mono">
         {/* // Profile/Name */}
-        <Link href={"/profile/"+tweet?.user?.id}>
-
-        <div className="text-textWhiteH w-fit flex flex-row items-center justify-start gap-4 cursor-pointer">
-          <img
-            className="h-14 w-14 rounded-full"
-            src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
-          />
-          {(() => {
-            if (tweet?.isRepost) {
-              return (
-                <div className="flex flex-col font-semibold">
-                  <p>Retweeted By {tweet?.user?.name}</p>
-                  <p>@{tweet?.user?.username}</p>
-                </div>
-              );
-            } else {
-              return (
-                <div className="flex flex-col font-semibold">
-                  <p>{tweet?.user?.name}</p>
-                  <p>@{tweet?.user?.username}</p>
-                </div>
-              );
-            }
-          })()}
-        </div>
+        <Link href={"/profile/" + tweet?.user?.id}>
+          <div className="text-textWhiteH w-fit flex flex-row items-center justify-start gap-4 cursor-pointer">
+            <img
+              className="h-14 w-14 rounded-full"
+              src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
+            />
+            {(() => {
+              if (tweet?.isRepost) {
+                return (
+                  <div className="flex flex-col font-semibold">
+                    <p>Retweeted By {tweet?.user?.name}</p>
+                    <p>@{tweet?.user?.username}</p>
+                  </div>
+                );
+              } else {
+                return (
+                  <div className="flex flex-col font-semibold">
+                    <p>{tweet?.user?.name}</p>
+                    <p>@{tweet?.user?.username}</p>
+                  </div>
+                );
+              }
+            })()}
+          </div>
         </Link>
 
         {/* // MoreOptions */}
@@ -74,7 +73,7 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
       </Link>
       <div className="w-full mt-2 border-b-2 border-b-gray100">
         <p className="text-accentGray my-4">
-          10:28 AM · Jul 13, 2022 · Twitter Web App
+          {formatDate(tweet?.createdAt)} · Twitter Web App
         </p>
       </div>
       <div className="w-full text-textWhite py-4 border-b-2 border-b-gray100">

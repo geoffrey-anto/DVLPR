@@ -9,6 +9,7 @@ export const GET_ALL_TWEETS = gql`
       isRepost
       likes
       repostCount
+      createdAt
       user {
         name
         username
@@ -33,6 +34,7 @@ export const GET_TWEET_BY_ID = gql`
       isRepost
       repostCount
       likes
+      createdAt
       user {
         id
         name
@@ -49,6 +51,7 @@ export const GET_TWEETS_FOR_USER = gql`
       id
       image
       isRepost
+      createdAt
       likes
       repostCount
       user {

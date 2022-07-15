@@ -18,6 +18,7 @@ export interface Tweet {
   isRepost: boolean;
   repostCount: number | null;
   user: null | User;
+  createdAt: string;
 }
 interface Data {
   getAllTweets: Tweet[];
@@ -57,7 +58,7 @@ function TweetFeed() {
           return (
             <div>
               {data?.getAllTweets?.map((tweet) => {
-                return <Feed key={tweet.id} tweet={tweet} />;
+                return <Feed style={undefined} key={tweet.id} tweet={tweet} />;
               })}
             </div>
           );

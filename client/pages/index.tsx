@@ -12,6 +12,7 @@ export type authStatusType = "registered" | "logged" | null;
 const Home: NextPage = () => {
   const [loginState, setLoginState] = useState<authStatusType>(null);
   const [userData, setUserData] = useState<any | undefined>(undefined);
+  const [pageStatus, setPageStatus] = useState<"loading" | "loaded">("loading");
   const cb = (isAuthenticated: authStatusType, data: any | undefined) => {
     if (isAuthenticated === null) {
       setLoginState(null);
@@ -25,6 +26,7 @@ const Home: NextPage = () => {
     }
   };
   useEffect(() => {
+    setPageStatus("loaded");
     if (localStorage.getItem("authId") !== null) {
       // console.log(
       //   (new Date().getTime() -
@@ -35,7 +37,7 @@ const Home: NextPage = () => {
         (new Date().getTime() -
           parseInt(localStorage.getItem("authTime") as string)) /
           (1000 * 60) >
-        0.5
+        15.0
       ) {
         setLoginState(null);
         localStorage.removeItem("authId");
@@ -51,59 +53,62 @@ const Home: NextPage = () => {
       });
     }
   }, []);
-  return (
-    <>
-      <Head>
-        <title>Twitter</title>
-      </Head>
-      <div className="h-screen w-screen bg-black flex flex-row overflow-y-hidden">
-        {(() => {
-          if (loginState === null) {
-            return (
-              <RegisterAuthPrompt
-                cb={cb}
-                style={
-                  loginState === null
-                    ? "absolute left-0 right-0 top-0 bottom-0 text-center"
-                    : "hidden"
-                }
-              />
-            );
-          } else if (loginState === "registered") {
-            return (
-              <LoginAuthPrompt
-                cb={cb}
-                style={
-                  loginState === null || loginState === "registered"
-                    ? "absolute left-0 right-0 top-0 bottom-0 text-center"
-                    : "hidden"
-                }
-              />
-            );
-          } else {
-            return <div></div>;
-          }
-        })()}
+  if (pageStatus === "loading") {
+    return <div className="w-screen h-screen bg-black"></div>;
+  } else
+    return (
+      <>
+        <Head>
+          <title>Twitter</title>
+        </Head>
+        <div className="h-screen w-screen bg-black flex flex-row overflow-y-hidden">
+          {(() => {
+            if (loginState === null) {
+              return (
+                <RegisterAuthPrompt
+                  cb={cb}
+                  style={
+                    loginState === null
+                      ? "absolute left-0 right-0 top-0 bottom-0 text-center"
+                      : "hidden"
+                  }
+                />
+              );
+            } else if (loginState === "registered") {
+              return (
+                <LoginAuthPrompt
+                  cb={cb}
+                  style={
+                    loginState === null || loginState === "registered"
+                      ? "absolute left-0 right-0 top-0 bottom-0 text-center"
+                      : "hidden"
+                  }
+                />
+              );
+            } else {
+              return <div></div>;
+            }
+          })()}
 
-        <SideBar userDetails={userData} />
-        <TweetFeed />
-        <div className="hidden flex-1 md:flex justify-center pt-5">
-          <button
-            placeholder="SignIn"
-            className="w-1/2 max-h-10 rounded-2xl border-2 border-textWhiteH text-textWhite"
-            onClick={() => {
-              setLoginState("registered");
-              localStorage.removeItem("authId");
-              localStorage.removeItem("authUserName");
-              localStorage.removeItem("authName");
-            }}
-          >
-            {loginState === null ? "Sign In" : "Sign Out"}
-          </button>
+          <SideBar userDetails={userData} />
+          <TweetFeed />
+          <div className="hidden flex-1 md:flex justify-center pt-5">
+            <button
+              placeholder="SignIn"
+              className="w-1/2 max-h-10 rounded-2xl border-2 border-textWhiteH text-textWhite"
+              onClick={() => {
+                setLoginState("registered");
+                localStorage.removeItem("authId");
+                localStorage.removeItem("authUserName");
+                localStorage.removeItem("authName");
+              }}
+            >
+              {loginState === null ? "Sign In" : "Sign Out"}
+            </button>
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
 };
 
 export default Home;
