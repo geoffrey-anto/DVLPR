@@ -1,23 +1,11 @@
-# Next.js + Tailwind CSS Example
+# A Tweeting App For Developers
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.0)](https://tailwindcss.com/blog/tailwindcss-v3) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+##  -------------------------------------------- On Progress ---------------------------------------------
 
-## Deploy your own
+![image](https://user-images.githubusercontent.com/91791834/179302145-978e067c-1cdf-4119-8e38-2ae0046072c7.png)
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+![image](https://user-images.githubusercontent.com/91791834/179302614-ba54ca74-ffd7-4dcb-a834-924ba027c679.png)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+![image](https://user-images.githubusercontent.com/91791834/179302927-41c23105-7ba9-4ce8-a1ef-855eb0a6d7c1.png)
 
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
-# or
-pnpm create next-app --example with-tailwindcss with-tailwindcss-app
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+![image](https://user-images.githubusercontent.com/91791834/179302961-718a0958-b1ea-4da9-b3e0-2c615bdd5120.png)
