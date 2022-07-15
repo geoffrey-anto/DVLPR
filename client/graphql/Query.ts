@@ -41,3 +41,21 @@ export const GET_TWEET_BY_ID = gql`
     }
   }
 `;
+
+export const GET_TWEETS_FOR_USER = gql`
+  query ($getTweetsForUserId: Float!) {
+    getTweetsForUser(id: $getTweetsForUserId) {
+      description
+      id
+      image
+      isRepost
+      likes
+      repostCount
+      user {
+        name
+        username
+        id
+      }
+    }
+  }
+`;

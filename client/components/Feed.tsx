@@ -11,8 +11,9 @@ import { GET_ALL_TWEETS, LIKE_TWEET } from "../graphql/Query";
 import { useMutation } from "@apollo/client";
 import Link from "next/link";
 import { RETWEET_TWEET } from "../graphql/Mutation";
+import toast from "react-hot-toast";
 
-function Feed({ tweet }: { tweet: Tweet }) {
+function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
   // Implement Like Checker
   const [likeTweet, { data, loading }] = useMutation(LIKE_TWEET, {
     refetchQueries: [{ query: GET_ALL_TWEETS }, "getAllTweets"],
@@ -23,10 +24,17 @@ function Feed({ tweet }: { tweet: Tweet }) {
   });
   const [isRetweeted, setIsRetweeted] = React.useState(false);
   return (
-    <div className="bg-black w-full h-full scrollbar-hide p-4 flex flex-col items-center">
+    <div
+      className={
+        style ||
+        "bg-black w-full h-full scrollbar-hide p-4 flex flex-col items-center"
+      }
+    >
       <div className="w-full h-auto flex flex-row items-center justify-between px-4 font-mono">
         {/* // Profile/Name */}
-        <div className="text-textWhiteH w-fit flex flex-row items-center justify-start gap-4">
+        <Link href={"/profile/"+tweet?.user?.id}>
+
+        <div className="text-textWhiteH w-fit flex flex-row items-center justify-start gap-4 cursor-pointer">
           <img
             className="h-14 w-14 rounded-full"
             src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
@@ -35,7 +43,7 @@ function Feed({ tweet }: { tweet: Tweet }) {
             if (tweet?.isRepost) {
               return (
                 <div className="flex flex-col font-semibold">
-                  <p>Retweeted By {tweet.user?.name}</p>
+                  <p>Retweeted By {tweet?.user?.name}</p>
                   <p>@{tweet?.user?.username}</p>
                 </div>
               );
@@ -49,6 +57,7 @@ function Feed({ tweet }: { tweet: Tweet }) {
             }
           })()}
         </div>
+        </Link>
 
         {/* // MoreOptions */}
         <div className="h-8 w-8 text-textWhiteH">
@@ -82,7 +91,7 @@ function Feed({ tweet }: { tweet: Tweet }) {
           </div>
           <div className="h-6 w-6 cursor-pointer">
             <RefreshIcon
-              className={isRetweeted ? "text-textTwitterBlue" : ""}
+              className={isRetweeted ? "text-twitterBlue" : "text-textWhite"}
               onClick={async () => {
                 if (tweet.user && tweet.id) {
                   const resp = await retweetTweet({
@@ -93,6 +102,12 @@ function Feed({ tweet }: { tweet: Tweet }) {
                       tweetId: parseFloat(tweet.id.toString()),
                     },
                   });
+                  if (resp.data?.retweetTweet === false) {
+                    toast("You have already retweeted this tweet", {
+                      duration: 2000,
+                    });
+                    return;
+                  }
                   setIsRetweeted(true);
                 }
               }}

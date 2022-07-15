@@ -82,7 +82,7 @@ class TweetResolver {
 
     const tweets = await Tweet.find({
       where: { userId: id },
-      relations: ["replies"],
+      relations: ["user", "replies"],
     });
 
     return tweets;
@@ -167,6 +167,8 @@ class TweetResolver {
       },
       relations: ["user"],
     });
+
+    if(tweet?.user.id === userId) return false;
 
     const currUser = await User.findOne({ where: { id: userId } });
 

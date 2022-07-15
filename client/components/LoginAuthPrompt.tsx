@@ -34,6 +34,8 @@ function LoginAuthPrompt({
       localStorage.setItem("authId", response.data.Login.id);
       localStorage.setItem("authUserName", response.data.Login.name);
       localStorage.setItem("authName", response.data.Login.username);
+      localStorage.setItem("authTime", new Date().getTime().toString());
+      console.log(new Date().getTime().toString());
       cb("logged", response.data.Login);
       window.location.reload();
     } else {

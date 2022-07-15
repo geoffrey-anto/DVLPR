@@ -7,6 +7,7 @@ import {
   UserIcon,
 } from "@heroicons/react/outline";
 import { DesktopComputerIcon } from "@heroicons/react/outline";
+import Link from "next/link";
 import NavComponent from "./NavComponent";
 import TweetButton from "./TweetButton";
 
@@ -14,7 +15,7 @@ interface Props {
   userDetails: any;
 }
 
-const SideBar = ({userDetails}: Props) => {
+const SideBar = ({ userDetails }: Props) => {
   return (
     <div className="hidden sm:w-[29%] md:w-[28%] lg:w-[20%] xl:1/4 h-full border-r-2 border-gray100 font-mono sm:flex sm:flex-col">
       <div className="w-full h-[17%]">
@@ -34,9 +35,13 @@ const SideBar = ({userDetails}: Props) => {
           <NavComponent Component={BellIcon} text="Alerts" />
           <NavComponent Component={InboxIcon} text="Messages" />
           <NavComponent Component={BookmarkIcon} text="Bookmarks" />
-          <NavComponent Component={UserIcon} text="Profile" />
+          <Link href={"/profile/"+userDetails?.id}>
+            <a>
+              <NavComponent Component={UserIcon} text="Profile" />
+            </a>
+          </Link>
         </div>
-        <TweetButton styles="text-black bg-twitterBlue h-[13%] w-[65%] text-center rounded-full mt-5"/>
+        <TweetButton styles="text-black bg-twitterBlue h-[13%] w-[65%] text-center rounded-full mt-5" />
       </div>
       <div className="w-full h-[18%] flex flex-row justify-evenly items-center">
         <img
@@ -45,7 +50,9 @@ const SideBar = ({userDetails}: Props) => {
           className="rounded-full h-[40%]"
         />
         <div className="flex flex-col justify-evenly items-start">
-          <p className="text-textWhiteH text-lg font-bold">@{userDetails?.username || ""}</p>
+          <p className="text-textWhiteH text-lg font-bold">
+            @{userDetails?.username || ""}
+          </p>
           <p className="text-textWhiteH text-md">{userDetails?.name || ""}</p>
         </div>
       </div>

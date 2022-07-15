@@ -26,9 +26,28 @@ const Home: NextPage = () => {
   };
   useEffect(() => {
     if (localStorage.getItem("authId") !== null) {
+      // console.log(
+      //   (new Date().getTime() -
+      //     parseInt(localStorage.getItem("authTime") as string)) /
+      //     (1000 * 60)
+      // );
+      if (
+        (new Date().getTime() -
+          parseInt(localStorage.getItem("authTime") as string)) /
+          (1000 * 60) >
+        0.5
+      ) {
+        setLoginState(null);
+        localStorage.removeItem("authId");
+        localStorage.removeItem("authUserName");
+        localStorage.removeItem("authName");
+        localStorage.removeItem("authTime");
+        return;
+      }
       cb("logged", {
         name: localStorage.getItem("authName"),
         username: localStorage.getItem("authUserName"),
+        id: localStorage.getItem("authId"),
       });
     }
   }, []);
