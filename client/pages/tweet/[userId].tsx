@@ -18,7 +18,7 @@ function Home() {
       (new Date().getTime() -
         parseInt(localStorage.getItem("authTime") as string)) /
         (1000 * 60) >
-      0.5
+      15.0
     ) {
       localStorage.removeItem("authId");
       localStorage.removeItem("authUserName");

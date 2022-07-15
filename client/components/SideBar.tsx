@@ -34,10 +34,10 @@ const SideBar = ({ userDetails }: Props) => {
         <div className="w-full h-[75%] flex flex-col">
           <Link href={"/"}>
             <a className="mb-2">
-              <NavComponent Component={HashtagIcon} text="Hashtags" />
+              <NavComponent Component={HomeIcon} text="Home" />
             </a>
           </Link>
-          <NavComponent Component={HomeIcon} text="Home" />
+          <NavComponent Component={HashtagIcon} text="Hashtags" />
           <NavComponent Component={BellIcon} text="Alerts" />
           <NavComponent Component={InboxIcon} text="Messages" />
           <NavComponent Component={BookmarkIcon} text="Bookmarks" />

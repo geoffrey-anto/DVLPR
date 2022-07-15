@@ -79,7 +79,7 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
       <div className="w-full text-textWhite py-4 border-b-2 border-b-gray100">
         <div className="w-[70%] md:w-[80%] lg:w-[60%] flex items-center justify-around">
           <p>{tweet?.repostCount === null ? 0 : tweet?.repostCount} Retweets</p>
-          <p>5 Quote Tweets</p>
+          <p>0 Quote Tweets</p>
           <p>{tweet?.likes} Likes</p>
         </div>
       </div>
