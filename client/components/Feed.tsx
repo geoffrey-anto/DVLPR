@@ -15,14 +15,17 @@ import toast from "react-hot-toast";
 import { formatDate } from "../utils/FormatDate";
 
 function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
-  const [likeTweet, { data, loading }] = useMutation(LIKE_TWEET, {
+  const [likeTweet, { loading }] = useMutation(LIKE_TWEET, {
     refetchQueries: [{ query: GET_ALL_TWEETS }, "getAllTweets"],
   });
   const [isLiked, setIsLiked] = React.useState(false);
-  const [retweetTweet, { error }] = useMutation(RETWEET_TWEET, {
+  const [retweetTweet] = useMutation(RETWEET_TWEET, {
     refetchQueries: [{ query: GET_ALL_TWEETS }, "getAllTweets"],
   });
   const [isRetweeted, setIsRetweeted] = React.useState(false);
+  if(loading){
+    return <div className="w-full h-full bg-black"></div>
+  }
   return (
     <div
       className={

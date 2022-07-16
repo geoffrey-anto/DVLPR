@@ -7,17 +7,18 @@ import { RegisterResolver } from "./modules/user/UserResolver";
 import cookieParser = require("cookie-parser");
 import { TweetResolver } from "./modules/tweet/TweetResolver";
 import { ReplyResolver } from "./modules/reply/ReplyResolver";
+require("dotenv").config();
 
 const main = async () => {
   const AppDataSource = new DataSource({
-    type: "postgres",
-    host: "localhost",
-    port: 5432,
-    username: "postgres",
-    password: "geoffrey",
-    database: "test2",
+    type: process.env.DATABASE_TYPE as "postgres",
+    host: process.env.DATABASE_HOST,
+    port: parseInt(process.env.DATABASE_PORT as string),
+    username: process.env.DATABASE_USER as string,
+    password: process.env.DATABASE_PASSWORD as string,
+    database: process.env.DATABASE_NAME as string,
     synchronize: true,
-    logging: true,
+    logging: false,
     entities: ["src/entity/**/*.ts"],
     // cache: {
     //   duration: 100,

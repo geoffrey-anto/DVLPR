@@ -14,7 +14,7 @@ function LoginAuthPrompt({
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const [loginUser, { data, error, loading }] = useMutation(
+  const [loginUser] = useMutation(
     LOGIN_USER_WITH_ID_NAME
   );
 

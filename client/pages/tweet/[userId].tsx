@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -37,6 +38,10 @@ function Home() {
     </div>;
   } else
   return (
+    <>
+    <Head>
+      <title>{(data?.getTweetById?.user?.username as string)?.toUpperCase() || " "}</title>
+    </Head>
     <div className="bg-black w-screen h-screen overflow-y-scroll scrollbar-hide">
       <div className="pt-2 pl-2">
         <div className="w-8 h-8 text-twitterBlue">
@@ -49,6 +54,7 @@ function Home() {
         <Feed style="" tweet={data?.getTweetById} />
       </div>
     </div>
+    </>
   );
 }
 

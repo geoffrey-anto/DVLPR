@@ -18,7 +18,7 @@ const AuthPrompt = ({
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
-  const [registerUser, { data, error, loading }] = useMutation(REGISTER_USER);
+  const [registerUser] = useMutation(REGISTER_USER);
 
   const registerHandler = async (
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>

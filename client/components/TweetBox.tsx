@@ -6,7 +6,7 @@ import {
   PhotographIcon,
   StarIcon,
 } from "@heroicons/react/outline";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { ADD_TWEET } from "../graphql/Mutation";
 import { GET_ALL_TWEETS } from "../graphql/Query";
@@ -16,30 +16,35 @@ function TweetBox() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<string>("");
   const [isImageSeleted, setIsImageSeleted] = useState(false);
-  const [addTweet, { data, error, loading }] = useMutation(ADD_TWEET);
+  const [addTweet] = useMutation(ADD_TWEET);
 
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (description.length <= 5) {
-      const x = toast("Please write atleast 6 characters", {
+      toast("Please write atleast 6 characters", {
         duration: 2500,
       });
       return;
     }
     const x = toast("Tweeting...", {});
     const id = localStorage.getItem("authId");
-    const response = await addTweet({
-      variables: {
-        addTweetId: parseFloat(id!),
-        tweetInput: {
-          description,
-          image,
-          isRepost: false,
+    let response;
+    try{
+      response = await addTweet({
+        variables: {
+          addTweetId: parseFloat(id!),
+          tweetInput: {
+            description,
+            image,
+            isRepost: false,
+          },
         },
-      },
-      refetchQueries: [GET_ALL_TWEETS, "getTweets"],
-    });
-    if (response.data.addTweet) {
+        refetchQueries: [GET_ALL_TWEETS, "getAllTweets"],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    if (response && response.data.addTweet) {
       toast("Tweeted Successfully", {
         duration: 2000,
         id: x,
@@ -54,6 +59,24 @@ function TweetBox() {
       setImage("");
     }
   };
+
+  function encodeImageFileAsURL(element: ChangeEvent<HTMLInputElement>) {
+    if(element.target.files) {
+      try{
+        var file = element?.target?.files[0] as File;
+        var reader = new FileReader();
+        reader.onloadend = function() {
+          setImage(reader.result as string);
+        }
+        reader.readAsDataURL(file);
+      } catch(error) {
+        console.log(error);
+      }
+    } else {
+      setImage("");
+    }
+  }
+  
 
   return (
     <div className="bg-black w-full h-fit pb-4">
@@ -102,11 +125,19 @@ function TweetBox() {
                   <LocationMarkerIcon />
                 </div>
               </div>
-              <input
+              {/* <input
                 className={!isImageSeleted ? "hidden" : "my-2 text-textWhite"}
                 type={"text"}
                 onChange={(e) => {
                   setImage(e.target.value);
+                }}
+              /> */}
+              <input
+                className={!isImageSeleted ? "hidden" : "my-2 text-textWhite"}
+                type={"file"}
+                // value={image}
+                onChange={(e) => {
+                  encodeImageFileAsURL(e)
                 }}
               />
               <TweetButton styles="text-black bg-twitterBlue h-12 w-[20%] text-center rounded-full text-lg md:text-xl text-bold" />
