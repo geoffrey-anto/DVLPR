@@ -12,6 +12,8 @@ const Home: NextPage = () => {
   const [loginState, setLoginState] = useState<authStatusType>(null);
   const [userData, setUserData] = useState<any | undefined>(undefined);
   const [pageStatus, setPageStatus] = useState<"loading" | "loaded">("loading");
+  const [sideBarState, setSideBarState] = useState<boolean>(false);
+
   const cb = (isAuthenticated: authStatusType, data: any | undefined) => {
     if (isAuthenticated === null) {
       setLoginState(null);
@@ -84,8 +86,25 @@ const Home: NextPage = () => {
             }
           })()}
 
-          <SideBar userDetails={userData} />
-          <TweetFeed />
+          <SideBar isMobile={false} containerStyle={undefined} userDetails={userData} />
+          {(() => {
+            if (!sideBarState) {
+              return null;
+            } else {
+              return (
+                <div className="absolute w-[50%] sm:w-[40%] h-full bg-black z-50 md:hidden">
+                  <SideBar isMobile={true} containerStyle={"flex flex-col md:hidden h-full border-r-2 border-gray100 font-mono"} userDetails={userData} />
+                </div>
+              );
+            }
+          })()}
+          <TweetFeed
+            openDrawer={(val: boolean) => {
+              if (val) {
+                setSideBarState(!sideBarState);
+              }
+            }}
+          />
           <div className="hidden flex-1 md:flex justify-center pt-5">
             <button
               placeholder="SignIn"

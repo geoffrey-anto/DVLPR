@@ -42,7 +42,13 @@ const AuthPrompt = ({
   };
 
   return (
-    <div className={`${style} h-full bg-black z-50 opacity-100`}>
+    <>
+    <img
+        src="https://i.ytimg.com/vi/GF0gWwv04gM/maxresdefault.jpg"
+        className="w-[110vw] h-[110vh] fixed z-20 object-fill blur-md"
+      />
+    <div className={`${style} h-full z-30 opacity-100`}>
+    <p className="absolute top-8 left-[40%] font-bold text-6xl text-textWhiteH font-mono">DeVeLoPeR</p>
       <div className="flex items-center px-8 ">
         <div
           onClick={() => {
@@ -56,7 +62,7 @@ const AuthPrompt = ({
           <p className="text-textWhiteH mt-4 font-bold ml-4 text-xl">LogIn</p>
         </div>
       </div>
-      <form className="w-2/3 h-2/3 md:w-[50%] lg:w-1/3 bg-textWhiteH opacity-100 ml-auto mr-auto mt-[8%] rounded-lg flex flex-col items-center justify-evenly">
+      <form className="w-2/3 h-2/3 md:w-[50%] lg:w-1/3 bg-textWhiteH opacity-80 ml-auto mr-auto mt-[8%] rounded-lg flex flex-col items-center justify-evenly">
         <p className="text-2xl font-bold">Register</p>
         <div className="flex flex-col w-[70%] h-[70%] items-center justify-evenly border-2 border-black">
           <input
@@ -78,6 +84,7 @@ const AuthPrompt = ({
           <input
             placeholder="Email"
             type={"email"}
+            autoComplete={"off"}
             onChange={(e) => {
               setEmail(e.target.value);
             }}
@@ -86,6 +93,7 @@ const AuthPrompt = ({
           <input
             placeholder="Password"
             type={"password"}
+            autoComplete={"off"}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
@@ -100,6 +108,7 @@ const AuthPrompt = ({
         </button>
       </form>
     </div>
+    </>
   );
 };
 

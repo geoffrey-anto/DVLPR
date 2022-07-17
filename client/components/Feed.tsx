@@ -44,16 +44,16 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
             {(() => {
               if (tweet?.isRepost) {
                 return (
-                  <div className="flex flex-col font-semibold">
-                    <p>Retweeted By {tweet?.user?.name}</p>
-                    <p>@{tweet?.user?.username}</p>
+                  <div className="flex flex-col font-semibold w-48 lg:w-full">
+                    <p className="text-sm lg:text-lg">Retweeted By {tweet?.user?.name}</p>
+                    <p className="text-sm lg:text-lg">@{tweet?.user?.username}</p>
                   </div>
                 );
               } else {
                 return (
-                  <div className="flex flex-col font-semibold">
-                    <p>{tweet?.user?.name}</p>
-                    <p>@{tweet?.user?.username}</p>
+                  <div className="flex flex-col font-semibold w-48 lg:w-full">
+                    <p className="text-sm lg:text-lg">{tweet?.user?.name}</p>
+                    <p className="text-sm lg:text-lg">@{tweet?.user?.username}</p>
                   </div>
                 );
               }

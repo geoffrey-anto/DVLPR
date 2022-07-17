@@ -3,6 +3,7 @@ import {
   ChartBarIcon,
   EmojiHappyIcon,
   LocationMarkerIcon,
+  MenuIcon,
   PhotographIcon,
   StarIcon,
 } from "@heroicons/react/outline";
@@ -12,7 +13,7 @@ import { ADD_TWEET } from "../graphql/Mutation";
 import { GET_ALL_TWEETS } from "../graphql/Query";
 import TweetButton from "./TweetButton";
 
-function TweetBox() {
+function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<string>("");
   const [isImageSeleted, setIsImageSeleted] = useState(false);
@@ -79,12 +80,19 @@ function TweetBox() {
   
 
   return (
-    <div className="bg-black w-full h-fit pb-4">
+    <div className="bg-black w-full h-fit pb-4 rounded-lg border-2 border-textWhiteH">
       <Toaster />
-      <div className="w-full flex flex-row items-center justify-between text-textWhiteH px-8 py-4">
+      <div className="w-full sm:w-full flex flex-row items-center justify-between text-textWhiteH px-8 py-4 ">
         <p className="text-2xl font-bold">Home</p>
-        <div className="h-10 w-10 sm:h-8 sm:w-8">
-          <StarIcon />
+        <div className="hidden z-50 w-[40px] md:flex sm:h-10 sm:w-10">
+          <StarIcon onClick={() => {
+            openDrawer(true)
+          }}/>
+        </div>
+        <div className="relative z-50 w-[40px] md:hidden sm:h-10 sm:w-10">
+          <MenuIcon onClick={() => {
+            openDrawer(true)
+          }}/>
         </div>
       </div>
       <div className="flex flex-row items-center justify-center lg:items-start lg:justify-between w-full h-full px-0 lg:px-5">
