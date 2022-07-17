@@ -58,6 +58,7 @@ export const GET_TWEETS_FOR_USER = gql`
         name
         username
         id
+        email
       }
     }
   }

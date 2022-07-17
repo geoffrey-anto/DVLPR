@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import React from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { LOGIN_USER_WITH_ID_NAME } from "../graphql/Mutation";
 import { authStatusType } from "../pages";
 
@@ -35,16 +36,16 @@ function LoginAuthPrompt({
       localStorage.setItem("authUserName", response.data.Login.name);
       localStorage.setItem("authName", response.data.Login.username);
       localStorage.setItem("authTime", new Date().getTime().toString());
-      console.log(new Date().getTime().toString());
       cb("logged", response.data.Login);
       window.location.reload();
     } else {
-      alert("Please Enter Valid Details");
+      toast("Please Enter Valid Details");
     }
   };
 
   return (
     <div className={`${style} h-full bg-black z-50 opacity-100`}>
+      <Toaster />
       <div className="flex items-center px-8">
         <div
           onClick={() => {

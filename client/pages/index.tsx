@@ -27,11 +27,6 @@ const Home: NextPage = () => {
   useEffect(() => {
     setPageStatus("loaded");
     if (localStorage.getItem("authId") !== null) {
-      // console.log(
-      //   (new Date().getTime() -
-      //     parseInt(localStorage.getItem("authTime") as string)) /
-      //     (1000 * 60)
-      // );
       if (
         (new Date().getTime() -
           parseInt(localStorage.getItem("authTime") as string)) /
@@ -60,7 +55,7 @@ const Home: NextPage = () => {
         <Head>
           <title>Twitter</title>
         </Head>
-        <div className="h-screen w-screen bg-black flex flex-row overflow-y-hidden">
+        <div className="p-0 m-0 h-screen w-screen bg-black flex flex-row overflow-y-hidden">
           {(() => {
             if (loginState === null) {
               return (

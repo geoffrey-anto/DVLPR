@@ -110,6 +110,7 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
                     });
                     return;
                   }
+                  window.scrollTo(0, 0)
                   setIsRetweeted(true);
                 }
               }}

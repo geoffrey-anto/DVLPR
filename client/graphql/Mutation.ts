@@ -30,3 +30,19 @@ export const RETWEET_TWEET = gql`
     retweetTweet(userId: $userId, tweetId: $tweetId)
   }
 `;
+
+export const CHANGE_USER_NAME = gql`
+  mutation ($newUsername: String!, $email: String!) {
+    changeUsername(newUsername: $newUsername, email: $email)
+  }
+`;
+
+export const CHANGE_USER_PASSWORD = gql`
+  mutation ($newPassword: String!, $oldPassword: String!, $email: String!) {
+    changeUserPassword(
+      newPassword: $newPassword
+      oldPassword: $oldPassword
+      email: $email
+    )
+  }
+`;
