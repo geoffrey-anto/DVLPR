@@ -262,6 +262,33 @@ class RegisterResolver {
       return false;
     }
   }
+
+  @Query(() => [User])
+  async getTopUsers(@Arg("limit") limit: number, @Ctx() ctx:MyCtx): Promise<User[]> {
+    if(limit < 1) return [];
+
+    if (ctx.req.cookies["access-token"] === undefined) {
+      return [];
+    }
+
+    try {
+      const users = await User.find({
+        relations: ["tweets"]
+      })
+
+      users.sort((a, b) => {
+        if(a.tweets.length > b.tweets.length) return -1;
+        if(a.tweets.length < b.tweets.length) return 1;
+        return 0;
+      });
+
+      return users.slice(0, limit);
+    }catch (e) {
+      console.log(e);
+    }
+
+    return [];
+  }
 }
 
 export { RegisterResolver };

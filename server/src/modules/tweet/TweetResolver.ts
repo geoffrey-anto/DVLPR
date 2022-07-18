@@ -42,7 +42,7 @@ class TweetResolver {
     // }
 
     const tweets = await Tweet.find({
-      relations: ["user"],
+      relations: ["user", "replies"],
       order: {
         id: {
           direction: "DESC",
@@ -55,8 +55,8 @@ class TweetResolver {
     return tweets;
   }
 
-  @Query(() => Tweet, {nullable: true})
-  async getTweetById(@Arg("tweetId") id: number, @Ctx() ctx: MyCtx){
+  @Query(() => Tweet, { nullable: true })
+  async getTweetById(@Arg("tweetId") id: number, @Ctx() ctx: MyCtx) {
     if (ctx.req.cookies["access-token"] === undefined) return null;
 
     const tweet = await Tweet.findOne({
@@ -170,7 +170,7 @@ class TweetResolver {
       relations: ["user"],
     });
 
-    if(tweet?.user.id === userId) return false;
+    if (tweet?.user.id === userId) return false;
 
     const currUser = await User.findOne({ where: { id: userId } });
 
@@ -178,7 +178,7 @@ class TweetResolver {
       return false;
     }
 
-    if(tweet.user.id === userId) return false;
+    if (tweet.user.id === userId) return false;
 
     const newTweet = new Tweet();
 
@@ -236,6 +236,25 @@ class TweetResolver {
     await Tweet.delete({ id: tweet.id });
 
     return true;
+  }
+
+  @Query(() => [Tweet])
+  async getTopTweets(@Arg("limit") limit: number, @Ctx() ctx: MyCtx){
+    if(ctx.req.cookies["access-token"] === undefined) return [];
+
+    if(limit < 0) return [];
+
+    const tweets = await Tweet.find({
+      order: {
+        likes: {
+          direction: "DESC",
+        },
+      },
+      take: limit,
+      relations: ["user"]
+    });
+
+    return tweets;
   }
 }
 

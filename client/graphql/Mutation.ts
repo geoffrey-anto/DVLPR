@@ -46,3 +46,9 @@ export const CHANGE_USER_PASSWORD = gql`
     )
   }
 `;
+
+export const REPLY_FOR_TWEET = gql`
+  mutation ($description: String!, $tweetId: Float!) {
+    addReplyForTweet(description: $description, tweetId: $tweetId)
+  }
+`;

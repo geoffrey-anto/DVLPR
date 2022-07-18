@@ -18,7 +18,7 @@ const main = async () => {
     password: process.env.DATABASE_PASSWORD as string,
     database: process.env.DATABASE_NAME as string,
     synchronize: true,
-    logging: false,
+    logging: true,
     entities: ["src/entity/**/*.ts"],
     // cache: {
     //   duration: 100,

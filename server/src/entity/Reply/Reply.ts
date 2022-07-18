@@ -23,6 +23,10 @@ class Reply extends BaseEntity {
   @Field(() => Int)
   likes: number;
 
+  @Column({nullable: true, default: "none"})
+  @Field(() => String, {nullable: true})
+  repliedUsername: string;
+
   @ManyToOne(() => Tweet, (tweet) => tweet.replies, { nullable: true })
   @Field(() => [Tweet], {nullable: true})
   tweet: Tweet;

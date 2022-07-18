@@ -258,6 +258,32 @@ let RegisterResolver = class RegisterResolver {
             }
         });
     }
+    getTopUsers(limit, ctx) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (limit < 1)
+                return [];
+            if (ctx.req.cookies["access-token"] === undefined) {
+                return [];
+            }
+            try {
+                const users = yield User_1.User.find({
+                    relations: ["tweets"]
+                });
+                users.sort((a, b) => {
+                    if (a.tweets.length > b.tweets.length)
+                        return -1;
+                    if (a.tweets.length < b.tweets.length)
+                        return 1;
+                    return 0;
+                });
+                return users.slice(0, limit);
+            }
+            catch (e) {
+                console.log(e);
+            }
+            return [];
+        });
+    }
 };
 __decorate([
     (0, type_graphql_1.Query)(() => [User_1.User], { nullable: false }),
@@ -315,6 +341,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], RegisterResolver.prototype, "changeUserPassword", null);
+__decorate([
+    (0, type_graphql_1.Query)(() => [User_1.User]),
+    __param(0, (0, type_graphql_1.Arg)("limit")),
+    __param(1, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], RegisterResolver.prototype, "getTopUsers", null);
 RegisterResolver = __decorate([
     (0, type_graphql_1.Resolver)(User_1.User)
 ], RegisterResolver);

@@ -1,4 +1,5 @@
 import {
+  ArrowLeftIcon,
   DotsHorizontalIcon,
   HeartIcon,
   RefreshIcon,
@@ -10,8 +11,8 @@ import { Tweet } from "./TweetFeed";
 import { GET_ALL_TWEETS, LIKE_TWEET } from "../graphql/Query";
 import { useMutation } from "@apollo/client";
 import Link from "next/link";
-import { RETWEET_TWEET } from "../graphql/Mutation";
-import toast from "react-hot-toast";
+import { REPLY_FOR_TWEET, RETWEET_TWEET } from "../graphql/Mutation";
+import toast, { Toaster } from "react-hot-toast";
 import { formatDate } from "../utils/FormatDate";
 
 function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
@@ -23,9 +24,18 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
     refetchQueries: [{ query: GET_ALL_TWEETS }, "getAllTweets"],
   });
   const [isRetweeted, setIsRetweeted] = React.useState(false);
-  if(loading){
-    return <div className="w-full h-full bg-black"></div>
+
+  const [addReply] = useMutation(REPLY_FOR_TWEET, {
+    refetchQueries: [{ query: GET_ALL_TWEETS }, "getAllTweets"],
+  });
+
+  const [isReplyActive, setIsReplyActive] = React.useState(false);
+
+  const [replyText, setReplyText] = React.useState("");
+  if (loading) {
+    return <div className="w-full h-full bg-black"></div>;
   }
+
   return (
     <div
       className={
@@ -33,6 +43,7 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
         "bg-black w-full h-full scrollbar-hide p-4 flex flex-col items-center"
       }
     >
+      <Toaster />
       <div className="w-full h-auto flex flex-row items-center justify-between px-4 font-mono">
         {/* // Profile/Name */}
         <Link href={"/profile/" + tweet?.user?.id}>
@@ -45,15 +56,21 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
               if (tweet?.isRepost) {
                 return (
                   <div className="flex flex-col font-semibold w-48 lg:w-full">
-                    <p className="text-sm lg:text-lg">Retweeted By {tweet?.user?.name}</p>
-                    <p className="text-sm lg:text-lg">@{tweet?.user?.username}</p>
+                    <p className="text-sm lg:text-lg">
+                      Retweeted By {tweet?.user?.name}
+                    </p>
+                    <p className="text-sm lg:text-lg">
+                      @{tweet?.user?.username}
+                    </p>
                   </div>
                 );
               } else {
                 return (
                   <div className="flex flex-col font-semibold w-48 lg:w-full">
                     <p className="text-sm lg:text-lg">{tweet?.user?.name}</p>
-                    <p className="text-sm lg:text-lg">@{tweet?.user?.username}</p>
+                    <p className="text-sm lg:text-lg">
+                      @{tweet?.user?.username}
+                    </p>
                   </div>
                 );
               }
@@ -67,11 +84,11 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
         </div>
       </div>
       <Link href={"/tweet/" + tweet?.id}>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center h-[55%]">
           <div className="text-textWhiteH flex flex-col p-6 text-lg lg:text-xl font-light lg:font-light font-sans">
             <p>{tweet?.description}</p>
           </div>
-          <img className="h-[55%]" src={tweet?.image} alt="" />
+          <img className="h-[50%]" src={tweet?.image} alt="" />
         </div>
       </Link>
       <div className="w-full mt-2 border-b-2 border-b-gray100">
@@ -82,14 +99,71 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
       <div className="w-full text-textWhite py-4 border-b-2 border-b-gray100">
         <div className="w-[70%] md:w-[80%] lg:w-[60%] flex items-center justify-around">
           <p>{tweet?.repostCount === null ? 0 : tweet?.repostCount} Retweets</p>
-          <p>0 Quote Tweets</p>
+          <p>{tweet?.replies?.length} Quote Tweets</p>
           <p>{tweet?.likes} Likes</p>
         </div>
       </div>
-      <div className="w-full h-fit mt-4 pb-4 px-8 text-textWhite border-b-2 border-b-gray100">
+      <div className="w-full h-fit mt-4 pb-4 px-8 text-textWhite">
         <div className="flex flex-row items-center justify-between">
           <div className="h-6 w-6 cursor-pointer">
-            <ReplyIcon />
+            <ReplyIcon
+              onClick={() => {
+                setIsReplyActive(!isReplyActive);
+              }}
+            />
+            {(() => {
+              if (isReplyActive) {
+                return (
+                  <div className="z-40 absolute top-[40%] left-[25%] right-[25%] w-[50%] h-[30%] bg-black border-2 border-textWhiteH">
+                    <div className="w-full flex items-center">
+                      <div className="w-10 h-10 px-2 py-2">
+                        <ArrowLeftIcon
+                          onClick={() => {
+                            setIsReplyActive(!isReplyActive);
+                          }}
+                        />
+                      </div>
+                      <p className="text-lg font-semibold ml-3">
+                        Reply to {tweet?.user?.username}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center justify-around h-[60%]">
+                      <input
+                        type={"text"}
+                        onChange={(e) => {
+                          setReplyText(e.target.value);
+                        }}
+                        className="w-[80%] h-12 bg-black border-b-2 border-b-textWhite text-lg pl-2"
+                      />
+                      <button
+                        onClick={async () => {
+                          if (replyText === "") {
+                            toast.error("Please enter a reply");
+                            return;
+                          }
+                          const response = await addReply({
+                            variables: {
+                              tweetId: tweet?.id,
+                              description: replyText,
+                            },
+                          });
+                          if (response.data?.addReplyForTweet) {
+                            toast.success("Reply added successfully");
+                            setIsReplyActive(false);
+                          } else {
+                            toast.error("Something went wrong");
+                            setIsReplyActive(false);
+                          }
+                        }}
+                        className="border-2 border-twitterBlue w-[30%] h-[30%] bg-twitterBlue text-lg font-semibold text-black"
+                      >
+                        Reply!
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+            })()}
           </div>
           <div className="h-6 w-6 cursor-pointer">
             <RefreshIcon
@@ -110,7 +184,7 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
                     });
                     return;
                   }
-                  window.scrollTo(0, 0)
+                  window.scrollTo(0, 0);
                   setIsRetweeted(true);
                 }
               }}

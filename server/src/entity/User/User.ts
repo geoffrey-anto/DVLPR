@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   username: string;
 
   @Column()
-  @Field(() => String, {})
+  // @Field(() => String, {})
   password: string;
 
   @OneToMany(() => Tweet, (tweet) => tweet.user, { nullable: true })

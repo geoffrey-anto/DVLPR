@@ -29,33 +29,42 @@ function Home() {
     }
   }, []);
   if (data?.getTweetById?.length === 0) {
-    return <div className="w-screen h-screen bg-black">
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-textWhiteH">No User Found</h1>
+    return (
+      <div className="w-screen h-screen bg-black">
+        <div className="flex justify-center items-center h-screen">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-textWhiteH">
+              No User Found
+            </h1>
+          </div>
         </div>
       </div>
-    </div>;
+    );
   } else
-  return (
-    <>
-    <Head>
-      <title>{(data?.getTweetById?.user?.username as string)?.toUpperCase() || " "}</title>
-    </Head>
-    <div className="bg-black w-screen h-screen overflow-y-scroll scrollbar-hide">
-      <div className="pt-2 pl-2">
-        <div className="w-8 h-8 text-twitterBlue">
-          <Link href={"/"}>
-            <ArrowLeftIcon />
-          </Link>
+    return (
+      <>
+        <Head>
+          <title>
+            {(data?.getTweetById?.user?.username as string)?.toUpperCase() ||
+              " "}
+          </title>
+        </Head>
+        <div className="bg-black w-screen h-screen overflow-y-scroll scrollbar-hide">
+          <div className="pt-2 pl-2">
+            <div className="w-8 h-8 text-twitterBlue">
+              <Link href={"/"}>
+                <ArrowLeftIcon />
+              </Link>
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <div className="w-[60%] h-auto">
+              <Feed style="" tweet={data?.getTweetById} />
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="w-full h-full">
-        <Feed style="" tweet={data?.getTweetById} />
-      </div>
-    </div>
-    </>
-  );
+      </>
+    );
 }
 
 export default Home;

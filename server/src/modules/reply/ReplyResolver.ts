@@ -1,7 +1,8 @@
 import { Reply } from "../../entity/Reply/Reply";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { MyCtx } from "typings";
+import { MyCtx, tokenResponse } from "typings";
 import { Tweet } from "../../entity/Tweet/Tweet";
+import { verify } from "jsonwebtoken";
 
 @Resolver(Reply)
 class ReplyResolver {
@@ -39,10 +40,19 @@ class ReplyResolver {
 
     const reply = new Reply();
 
+    const token: tokenResponse = verify(
+      ctx.req.cookies["access-token"],
+      process.env.JWT_SECRET as string
+    ) as tokenResponse;
+
+    const userName = token.user_UserName;
+
+    reply.repliedUsername = userName;
     reply.description = description;
     reply.likes = 1;
     reply.tweet = tweet;
 
+    tweet.replyCount = !tweet.replyCount ? 0 : tweet.replyCount;
 
     await reply.tweet.save()
     

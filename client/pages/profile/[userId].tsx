@@ -10,6 +10,7 @@ import SideBar from "../../components/SideBar";
 import { CHANGE_USER_NAME, CHANGE_USER_PASSWORD } from "../../graphql/Mutation";
 import { GET_TWEETS_FOR_USER } from "../../graphql/Query";
 import { checkPasswordChangeInputs } from "../../utils/CheckPasswordChangeInputs";
+import TrendingList from "../../components/TrendingList";
 
 const Index = () => {
   const uId = useRouter().query.userId;
@@ -150,8 +151,8 @@ const Index = () => {
         >
           <Toaster />
           <SideBar
-          containerStyle={undefined}
-          isMobile={false}
+            containerStyle={undefined}
+            isMobile={false}
             userDetails={
               data?.getTweetsForUser ? data?.getTweetsForUser[0]?.user : {}
             }
@@ -335,10 +336,11 @@ const Index = () => {
             </div>
             {<div className="overflow-y-scroll scrollbar-hide"></div>}
           </div>
-          <div className="hidden flex-1 md:flex justify-center pt-5">
+          <div className="hidden md:flex-col md:flex-1 md:flex justify-between pt-5">
+            <div className="w-[100%] h-[10%] flex items-center justify-center">
             <button
               placeholder="SignIn"
-              className="w-1/2 max-h-10 rounded-2xl border-2 border-textWhiteH text-textWhite"
+              className="w-48 h-12 rounded-2xl border-2 border-textWhiteH text-textWhite"
               onClick={() => {
                 localStorage.removeItem("authId");
                 localStorage.removeItem("authUserName");
@@ -349,6 +351,10 @@ const Index = () => {
             >
               {"Sign Out"}
             </button>
+            </div>
+            <div className="w-full h-[90%]">
+              <TrendingList />
+            </div>
           </div>
         </div>
       </>

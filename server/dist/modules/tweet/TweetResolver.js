@@ -186,6 +186,24 @@ let TweetResolver = class TweetResolver {
             return true;
         });
     }
+    getTopTweets(limit, ctx) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (ctx.req.cookies["access-token"] === undefined)
+                return [];
+            if (limit < 0)
+                return [];
+            const tweets = yield Tweet_1.Tweet.find({
+                order: {
+                    likes: {
+                        direction: "DESC",
+                    },
+                },
+                take: limit,
+                relations: ["user"]
+            });
+            return tweets;
+        });
+    }
 };
 __decorate([
     (0, type_graphql_1.Query)(() => [Tweet_1.Tweet], { nullable: true }),
@@ -244,6 +262,14 @@ __decorate([
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], TweetResolver.prototype, "deleteTweet", null);
+__decorate([
+    (0, type_graphql_1.Query)(() => [Tweet_1.Tweet]),
+    __param(0, (0, type_graphql_1.Arg)("limit")),
+    __param(1, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], TweetResolver.prototype, "getTopTweets", null);
 TweetResolver = __decorate([
     (0, type_graphql_1.Resolver)(Tweet_1.Tweet)
 ], TweetResolver);

@@ -5,6 +5,7 @@ import LoginAuthPrompt from "../components/LoginAuthPrompt";
 import RegisterAuthPrompt from "../components/RegisterAuthPrompt";
 import SideBar from "../components/SideBar";
 import TweetFeed from "../components/TweetFeed";
+import TrendingList from "../components/TrendingList";
 
 export type authStatusType = "registered" | "logged" | null;
 
@@ -105,10 +106,11 @@ const Home: NextPage = () => {
               }
             }}
           />
-          <div className="hidden flex-1 md:flex justify-center pt-5">
+          <div className="hidden md:flex-col md:flex-1 md:flex justify-between pt-5">
+            <div className="w-[100%] h-[10%] flex items-center justify-center">
             <button
               placeholder="SignIn"
-              className="w-1/2 max-h-10 rounded-2xl border-2 border-textWhiteH text-textWhite"
+              className="w-48 h-12 rounded-2xl border-2 border-textWhiteH text-textWhite"
               onClick={() => {
                 setLoginState("registered");
                 localStorage.removeItem("authId");
@@ -118,6 +120,10 @@ const Home: NextPage = () => {
             >
               {loginState === null ? "Sign In" : "Sign Out"}
             </button>
+            </div>
+            <div className="w-full h-[90%]">
+              <TrendingList />
+            </div>
           </div>
         </div>
       </>
