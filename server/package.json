@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn src/index.ts",
-    "start": "ts-node src/index.ts",
-    "build": "tsc"
+    "start:typescript": "ts-node src/index.ts",
+    "start:node": "node dist/index.js",
+    "build": "tsc && node ./Script.js"
   },
   "keywords": [],
   "author": "",

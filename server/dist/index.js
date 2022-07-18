@@ -32,7 +32,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         database: process.env.DATABASE_NAME,
         synchronize: true,
         logging: false,
-        entities: ["src/entity/**/*.ts"],
+        entities: ["dist/entity/**/*.js"],
     });
     AppDataSource.initialize();
     const app = (0, express_1.default)();

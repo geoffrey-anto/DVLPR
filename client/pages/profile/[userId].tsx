@@ -150,6 +150,8 @@ const Index = () => {
         >
           <Toaster />
           <SideBar
+          containerStyle={undefined}
+          isMobile={false}
             userDetails={
               data?.getTweetsForUser ? data?.getTweetsForUser[0]?.user : {}
             }
