@@ -42,6 +42,11 @@ __decorate([
     __metadata("design:type", Number)
 ], Tweet.prototype, "likes", void 0);
 __decorate([
+    (0, typeorm_1.Column)("int", { nullable: true, default: [], array: true }),
+    (0, type_graphql_1.Field)(() => [type_graphql_1.Int], { nullable: true }),
+    __metadata("design:type", Array)
+], Tweet.prototype, "likesIds", void 0);
+__decorate([
     (0, typeorm_1.Column)(),
     (0, type_graphql_1.Field)(() => Boolean),
     __metadata("design:type", Boolean)
@@ -55,6 +60,11 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], Tweet.prototype, "userId", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true, default: 0 }),
+    (0, type_graphql_1.Field)(() => type_graphql_1.Int, { nullable: true }),
+    __metadata("design:type", Number)
+], Tweet.prototype, "replyCount", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => Reply_1.Reply, (reply) => reply.tweet, { nullable: true }),
     (0, type_graphql_1.Field)(() => [Reply_1.Reply], { nullable: true }),

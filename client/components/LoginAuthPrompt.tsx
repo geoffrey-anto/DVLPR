@@ -29,6 +29,7 @@ function LoginAuthPrompt({
         },
       },
     });
+    console.log(response)
     if (response.data.Login !== null) {
       localStorage.setItem("authId", response.data.Login.id);
       localStorage.setItem("authUserName", response.data.Login.name);

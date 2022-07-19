@@ -11,6 +11,7 @@ export const GET_ALL_TWEETS = gql`
       repostCount
       createdAt
       replyCount
+      likesIds
       user {
         name
         username
@@ -41,6 +42,7 @@ export const GET_TWEET_BY_ID = gql`
       repostCount
       likes
       createdAt
+      likesIds
       replyCount
       user {
         id
@@ -62,11 +64,17 @@ export const GET_TWEETS_FOR_USER = gql`
       likes
       repostCount
       replyCount
+      likesIds
       user {
         name
         username
         id
         email
+      }
+      replies {
+        id
+        repliedUsername
+        description
       }
     }
   }
@@ -98,6 +106,16 @@ export const GET_TOP_TWEETS = gql`
         email
         username
       }
+    }
+  }
+`;
+
+export const GET_REPLY_FOR_TWEET = gql`
+  query ($tweetId: Float!) {
+    getReplies(tweetId: $tweetId) {
+      description
+      repliedUsername
+      id
     }
   }
 `;

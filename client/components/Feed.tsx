@@ -6,7 +6,7 @@ import {
   ReplyIcon,
   ShareIcon,
 } from "@heroicons/react/outline";
-import React from "react";
+import React, { useEffect } from "react";
 import { Tweet } from "./TweetFeed";
 import { GET_ALL_TWEETS, LIKE_TWEET } from "../graphql/Query";
 import { useMutation } from "@apollo/client";
@@ -15,7 +15,7 @@ import { REPLY_FOR_TWEET, RETWEET_TWEET } from "../graphql/Mutation";
 import toast, { Toaster } from "react-hot-toast";
 import { formatDate } from "../utils/FormatDate";
 
-function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
+function Feed({ tweet, style, replyCount }: { tweet: Tweet; style: string | undefined; replyCount: number | undefined }) {
   const [likeTweet, { loading }] = useMutation(LIKE_TWEET, {
     refetchQueries: [{ query: GET_ALL_TWEETS }, "getAllTweets"],
   });
@@ -32,10 +32,19 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
   const [isReplyActive, setIsReplyActive] = React.useState(false);
 
   const [replyText, setReplyText] = React.useState("");
+  
+  const [userId, setUserId] = React.useState(0);
+  
+  useEffect(() => {
+    const id = localStorage.getItem("authId");
+    if (id) {
+      setUserId(parseInt(id));
+    }
+  },[])
+  
   if (loading) {
     return <div className="w-full h-full bg-black"></div>;
   }
-
   return (
     <div
       className={
@@ -88,7 +97,9 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
           <div className="text-textWhiteH flex flex-col p-6 text-lg lg:text-xl font-light lg:font-light font-sans">
             <p>{tweet?.description}</p>
           </div>
-          <img className="h-[50%]" src={tweet?.image} alt="" />
+          <div className=" max-h-[500px] max-w-[500px]">
+          <img className="object-cover" src={tweet?.image} alt="" />
+          </div>
         </div>
       </Link>
       <div className="w-full mt-2 border-b-2 border-b-gray100">
@@ -99,7 +110,7 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
       <div className="w-full text-textWhite py-4 border-b-2 border-b-gray100">
         <div className="w-[70%] md:w-[80%] lg:w-[60%] flex items-center justify-around">
           <p>{tweet?.repostCount === null ? 0 : tweet?.repostCount} Retweets</p>
-          <p>{tweet?.replies?.length} Quote Tweets</p>
+          <p>{tweet?.replies?.length | replyCount as number} Quote Tweets</p>
           <p>{tweet?.likes} Likes</p>
         </div>
       </div>
@@ -193,10 +204,15 @@ function Feed({ tweet, style }: { tweet: Tweet; style: string | undefined }) {
           <div className="h-6 w-6 cursor-pointer">
             <p className="text-textWhiteH"></p>
             <HeartIcon
-              className={isLiked ? "text-[#F10C45]" : "text-textWhiteH"}
+              className={(tweet?.likesIds && (tweet?.likesIds.indexOf(userId) != -1)) ? "text-[#F10C45]" : "text-textWhiteH"}
               onClick={async () => {
                 setIsLiked(!isLiked);
-                await likeTweet({ variables: { likeTweetId: tweet?.id } });
+                const resp = await likeTweet({ variables: { likeTweetId: tweet?.id } });
+                if(resp.data?.likeTweet){
+                  toast.success("Tweet liked successfully");
+                } else {
+                  toast.error("Already Liked");
+                }
               }}
             />
           </div>

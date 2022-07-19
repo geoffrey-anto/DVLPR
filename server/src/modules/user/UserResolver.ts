@@ -118,7 +118,7 @@ class RegisterResolver {
       },
       process.env.JWT_SECRET as string,
       {
-        expiresIn: "7d",
+        expiresIn: "1d",
       }
     );
 
@@ -143,7 +143,7 @@ class RegisterResolver {
         secure: true,
       });
       ctx.res.cookie("refresh-token", refreshToken, {
-        expires: new Date(Date.now() + 60 * 60 * 24 * 7 * 1000),
+        expires: new Date(Date.now() + 60 * 60 * 24 * 1 * 1000),
         httpOnly: true,
         sameSite: "none",
         secure: true,
@@ -160,11 +160,11 @@ class RegisterResolver {
     @Arg("newUsername") newUsername: string,
     @Ctx() ctx: MyCtx
   ) {
-    if (ctx.req.cookies["access-token"] === undefined) {
+    if (ctx.req.cookies["refresh-token"] === undefined) {
       return false;
     }
     const token: tokenResponse = verify(
-      ctx.req.cookies["access-token"],
+      ctx.req.cookies["refresh-token"],
       process.env.JWT_SECRET as string
     ) as tokenResponse;
     if (email === token.user_Email) {
@@ -186,12 +186,12 @@ class RegisterResolver {
     @Arg("password") password: string,
     @Ctx() ctx: MyCtx
   ): Promise<boolean> {
-    if (ctx.req.cookies["access-token"] === undefined) {
+    if (ctx.req.cookies["refresh-token"] === undefined) {
       return false;
     }
     try {
       const token: tokenResponse = verify(
-        ctx.req.cookies["access-token"],
+        ctx.req.cookies["refresh-token"],
         process.env.JWT_SECRET as string
       ) as tokenResponse;
 
@@ -226,7 +226,7 @@ class RegisterResolver {
     @Arg("newPassword") newPassword: string,
     @Ctx() ctx: MyCtx
   ): Promise<boolean> {
-    if (ctx.req.cookies["access-token"] === undefined) {
+    if (ctx.req.cookies["refresh-token"] === undefined) {
       return false;
     }
     try {
@@ -235,7 +235,7 @@ class RegisterResolver {
         return false;
       }
       const token: tokenResponse = verify(
-        ctx.req.cookies["access-token"],
+        ctx.req.cookies["refresh-token"],
         process.env.JWT_SECRET as string
       ) as tokenResponse;
 
@@ -267,7 +267,7 @@ class RegisterResolver {
   async getTopUsers(@Arg("limit") limit: number, @Ctx() ctx:MyCtx): Promise<User[]> {
     if(limit < 1) return [];
 
-    if (ctx.req.cookies["access-token"] === undefined) {
+    if (ctx.req.cookies["refresh-token"] === undefined) {
       return [];
     }
 

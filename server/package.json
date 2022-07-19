@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn src/index.ts",
     "start:typescript": "ts-node src/index.ts",
-    "start:node": "node dist/index.js",
+    "start": "node dist/index.js",
     "build": "tsc && node ./Script.js"
   },
   "keywords": [],

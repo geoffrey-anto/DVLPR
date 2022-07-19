@@ -31,6 +31,11 @@ __decorate([
     __metadata("design:type", Number)
 ], Reply.prototype, "likes", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ nullable: true, default: "none" }),
+    (0, type_graphql_1.Field)(() => String, { nullable: true }),
+    __metadata("design:type", String)
+], Reply.prototype, "repliedUsername", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => Tweet_1.Tweet, (tweet) => tweet.replies, { nullable: true }),
     (0, type_graphql_1.Field)(() => [Tweet_1.Tweet], { nullable: true }),
     __metadata("design:type", Tweet_1.Tweet)

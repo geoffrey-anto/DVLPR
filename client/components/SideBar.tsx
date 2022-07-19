@@ -15,9 +15,10 @@ interface Props {
   userDetails: any;
   containerStyle: string | undefined;
   isMobile: boolean;
+  openTweetBox: () => void;
 }
 
-const SideBar = ({ userDetails, containerStyle, isMobile }: Props) => {
+const SideBar = ({ userDetails, containerStyle, isMobile, openTweetBox }: Props) => {
   return (
     <div
       className={
@@ -73,7 +74,11 @@ const SideBar = ({ userDetails, containerStyle, isMobile }: Props) => {
             </a>
           </Link>
         </div>
-        <TweetButton styles="text-black bg-twitterBlue h-[13%] w-[65%] text-center rounded-full mt-5" />
+        <div onClick={() => {
+          openTweetBox();
+        }} className="h-[13%] w-[65%] mt-5 rounded-full overflow-hidden">
+        <TweetButton styles="w-full h-full text-black bg-twitterBlue text-center" />
+        </div>
       </div>
       <div className="w-full h-[18%] flex flex-row justify-evenly items-center">
         <img

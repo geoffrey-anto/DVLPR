@@ -25,6 +25,7 @@ exports.ReplyResolver = void 0;
 const Reply_1 = require("../../entity/Reply/Reply");
 const type_graphql_1 = require("type-graphql");
 const Tweet_1 = require("../../entity/Tweet/Tweet");
+const jsonwebtoken_1 = require("jsonwebtoken");
 let ReplyResolver = class ReplyResolver {
     getReplies(id, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -52,9 +53,13 @@ let ReplyResolver = class ReplyResolver {
             if (tweet === null)
                 return false;
             const reply = new Reply_1.Reply();
+            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+            const userName = token.user_UserName;
+            reply.repliedUsername = userName;
             reply.description = description;
             reply.likes = 1;
             reply.tweet = tweet;
+            tweet.replyCount = !tweet.replyCount ? 0 : tweet.replyCount;
             yield reply.tweet.save();
             yield reply.save();
             return true;

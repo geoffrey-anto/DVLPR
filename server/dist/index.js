@@ -31,7 +31,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
         synchronize: true,
-        logging: false,
+        logging: true,
         entities: ["dist/entity/**/*.js"],
     });
     AppDataSource.initialize();

@@ -5,7 +5,7 @@ import "../styles/color.css"
 
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri: 'https://devlpr.herokuapp.com/graphql',
   cache: new InMemoryCache(),
   credentials: "include",
 });

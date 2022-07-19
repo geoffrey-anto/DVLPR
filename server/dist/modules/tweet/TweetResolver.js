@@ -51,7 +51,7 @@ let TweetResolver = class TweetResolver {
             if (ctx.req.cookies["access-token"] === undefined)
                 return null;
             const tweets = yield Tweet_1.Tweet.find({
-                relations: ["user"],
+                relations: ["user", "replies"],
                 order: {
                     id: {
                         direction: "DESC",
@@ -118,7 +118,18 @@ let TweetResolver = class TweetResolver {
             const tweet = yield Tweet_1.Tweet.findOne({ where: { id } });
             if (tweet === null)
                 return false;
+            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+            let isFound = false;
+            tweet.likesIds.forEach((element) => {
+                if (element === token.user_Id) {
+                    isFound = true;
+                    return;
+                }
+            });
+            if (isFound)
+                return false;
             tweet.likes += 1;
+            tweet.likesIds.push(token.user_Id);
             yield tweet.save();
             return true;
         });
@@ -199,7 +210,7 @@ let TweetResolver = class TweetResolver {
                     },
                 },
                 take: limit,
-                relations: ["user"]
+                relations: ["user"],
             });
             return tweets;
         });

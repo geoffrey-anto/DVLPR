@@ -15,7 +15,7 @@ import TweetButton from "./TweetButton";
 
 function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<string | null>("");
   const [isImageSeleted, setIsImageSeleted] = useState(false);
   const [addTweet] = useMutation(ADD_TWEET);
 
@@ -36,7 +36,7 @@ function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
           addTweetId: parseFloat(id!),
           tweetInput: {
             description,
-            image,
+            image: image ? image : "",
             isRepost: false,
           },
         },
@@ -51,13 +51,15 @@ function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
         id: x,
       });
       setDescription("");
-      setImage("");
+      setImage(null);
+      setIsImageSeleted(false);
     } else {
       toast("Error Ocurred! :(", {
         duration: 2000,
       });
       setDescription("");
-      setImage("");
+      setImage(null);
+      setIsImageSeleted(false);
     }
   };
 
@@ -105,6 +107,7 @@ function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
             <input
               placeholder="What's Happening?"
               inputMode="text"
+              value={description}
               style={{ textTransform: "capitalize" }}
               onChange={(e) => setDescription(e.target.value)}
               className="bg-black w-full h-14 lg:h-16 text-textWhiteH border-textWhiteH border-b-2 font-semibold text-lg focus:outline-none focus:border-b-textWhiteH caret-twitterBlue px-4"
@@ -143,7 +146,6 @@ function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
               <input
                 className={!isImageSeleted ? "hidden" : "my-2 text-textWhite"}
                 type={"file"}
-                // value={image}
                 onChange={(e) => {
                   encodeImageFileAsURL(e)
                 }}

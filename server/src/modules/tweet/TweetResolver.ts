@@ -30,10 +30,10 @@ class TweetInput {
 class TweetResolver {
   @Query(() => [Tweet], { nullable: true })
   async getAllTweets(@Ctx() ctx: MyCtx) {
-    if (ctx.req.cookies["access-token"] === undefined) return null;
+    if (ctx.req.cookies["refresh-token"] === undefined) return null;
 
     // const token: tokenResponse = verify(
-    //   ctx.req.cookies["access-token"],
+    //   ctx.req.cookies["refresh-token"],
     //   process.env.JWT_SECRET as string
     // ) as tokenResponse;
 
@@ -57,7 +57,7 @@ class TweetResolver {
 
   @Query(() => Tweet, { nullable: true })
   async getTweetById(@Arg("tweetId") id: number, @Ctx() ctx: MyCtx) {
-    if (ctx.req.cookies["access-token"] === undefined) return null;
+    if (ctx.req.cookies["refresh-token"] === undefined) return null;
 
     const tweet = await Tweet.findOne({
       where: { id: id },
@@ -69,10 +69,10 @@ class TweetResolver {
 
   @Query(() => [Tweet], { nullable: true })
   async getTweetsForUser(@Arg("id") id: number, @Ctx() ctx: MyCtx) {
-    if (ctx.req.cookies["access-token"] === undefined) return null;
+    if (ctx.req.cookies["refresh-token"] === undefined) return null;
 
     // const token: tokenResponse = verify(
-    //   ctx.req.cookies["access-token"],
+    //   ctx.req.cookies["refresh-token"],
     //   process.env.JWT_SECRET as string
     // ) as tokenResponse;
 
@@ -94,10 +94,10 @@ class TweetResolver {
     @Arg("tweetInput") x: TweetInput,
     @Ctx() ctx: MyCtx
   ) {
-    if (ctx.req.cookies["access-token"] === undefined) return false;
+    if (ctx.req.cookies["refresh-token"] === undefined) return false;
 
     const token: tokenResponse = verify(
-      ctx.req.cookies["access-token"],
+      ctx.req.cookies["refresh-token"],
       process.env.JWT_SECRET as string
     ) as tokenResponse;
 
@@ -133,13 +133,32 @@ class TweetResolver {
 
   @Mutation(() => Boolean)
   async likeTweet(@Arg("id") id: number, @Ctx() ctx: MyCtx) {
-    if (ctx.req.cookies["access-token"] === undefined) return false;
+    if (ctx.req.cookies["refresh-token"] === undefined) return false;
 
     const tweet = await Tweet.findOne({ where: { id } });
 
     if (tweet === null) return false;
 
+    const token: tokenResponse = verify(
+      ctx.req.cookies["refresh-token"],
+      process.env.JWT_SECRET as string
+    ) as tokenResponse;
+
+    let isFound = false;
+
+    tweet.likesIds.forEach((element) => {
+      if (element === token.user_Id) {
+        isFound = true;
+        return;
+      }
+    });
+
+    if (isFound) return false;
+
+
     tweet.likes += 1;
+
+    tweet.likesIds.push(token.user_Id);
 
     await tweet.save();
 
@@ -152,10 +171,10 @@ class TweetResolver {
     @Arg("userId") userId: number,
     @Ctx() ctx: MyCtx
   ) {
-    if (ctx.req.cookies["access-token"] === undefined) return false;
+    if (ctx.req.cookies["refresh-token"] === undefined) return false;
 
     const token: tokenResponse = verify(
-      ctx.req.cookies["access-token"],
+      ctx.req.cookies["refresh-token"],
       process.env.JWT_SECRET as string
     ) as tokenResponse;
 
@@ -210,10 +229,10 @@ class TweetResolver {
 
   @Mutation(() => Boolean)
   async deleteTweet(@Arg("tweetId") id: number, @Ctx() ctx: MyCtx) {
-    if (ctx.req.cookies["access-token"] === undefined) return null;
+    if (ctx.req.cookies["refresh-token"] === undefined) return null;
 
     const token: tokenResponse = verify(
-      ctx.req.cookies["access-token"],
+      ctx.req.cookies["refresh-token"],
       process.env.JWT_SECRET as string
     ) as tokenResponse;
 
@@ -239,10 +258,10 @@ class TweetResolver {
   }
 
   @Query(() => [Tweet])
-  async getTopTweets(@Arg("limit") limit: number, @Ctx() ctx: MyCtx){
-    if(ctx.req.cookies["access-token"] === undefined) return [];
+  async getTopTweets(@Arg("limit") limit: number, @Ctx() ctx: MyCtx) {
+    if (ctx.req.cookies["refresh-token"] === undefined) return [];
 
-    if(limit < 0) return [];
+    if (limit < 0) return [];
 
     const tweets = await Tweet.find({
       order: {
@@ -251,7 +270,7 @@ class TweetResolver {
         },
       },
       take: limit,
-      relations: ["user"]
+      relations: ["user"],
     });
 
     return tweets;

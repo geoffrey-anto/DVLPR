@@ -6,6 +6,7 @@ import RegisterAuthPrompt from "../components/RegisterAuthPrompt";
 import SideBar from "../components/SideBar";
 import TweetFeed from "../components/TweetFeed";
 import TrendingList from "../components/TrendingList";
+import { SunIcon } from "@heroicons/react/outline";
 
 export type authStatusType = "registered" | "logged" | null;
 
@@ -14,6 +15,11 @@ const Home: NextPage = () => {
   const [userData, setUserData] = useState<any | undefined>(undefined);
   const [pageStatus, setPageStatus] = useState<"loading" | "loaded">("loading");
   const [sideBarState, setSideBarState] = useState<boolean>(false);
+  const [isTweetBoxActive, setIsTweetBoxActive] = useState<boolean>(true);
+
+  const toggleTweetBox = () => {
+    setIsTweetBoxActive(!isTweetBoxActive);
+  };
 
   const cb = (isAuthenticated: authStatusType, data: any | undefined) => {
     if (isAuthenticated === null) {
@@ -28,13 +34,18 @@ const Home: NextPage = () => {
     }
   };
   useEffect(() => {
+    window.addEventListener("resize", () => {
+      if (window.screen.availWidth < 768) {
+        setIsTweetBoxActive(true);
+      }
+    });
     setPageStatus("loaded");
     if (localStorage.getItem("authId") !== null) {
       if (
         (new Date().getTime() -
           parseInt(localStorage.getItem("authTime") as string)) /
-          (1000 * 60) >
-        15.0
+          (1000 * 60 * 60 * 24) >
+        1.0
       ) {
         setLoginState(null);
         localStorage.removeItem("authId");
@@ -87,19 +98,32 @@ const Home: NextPage = () => {
             }
           })()}
 
-          <SideBar isMobile={false} containerStyle={undefined} userDetails={userData} />
+          <SideBar
+            isMobile={false}
+            containerStyle={undefined}
+            userDetails={userData}
+            openTweetBox={toggleTweetBox}
+          />
           {(() => {
             if (!sideBarState) {
               return null;
             } else {
               return (
                 <div className="absolute w-[50%] sm:w-[40%] h-full bg-black z-50 md:hidden">
-                  <SideBar isMobile={true} containerStyle={"flex flex-col md:hidden h-full border-r-2 border-gray100 font-mono"} userDetails={userData} />
+                  <SideBar
+                    isMobile={true}
+                    containerStyle={
+                      "flex flex-col md:hidden h-full border-r-2 border-gray100 font-mono"
+                    }
+                    userDetails={userData}
+                    openTweetBox={toggleTweetBox}
+                  />
                 </div>
               );
             }
           })()}
           <TweetFeed
+            isOpen={isTweetBoxActive}
             openDrawer={(val: boolean) => {
               if (val) {
                 setSideBarState(!sideBarState);
@@ -107,19 +131,21 @@ const Home: NextPage = () => {
             }}
           />
           <div className="hidden md:flex-col md:flex-1 md:flex justify-between pt-5">
-            <div className="w-[100%] h-[10%] flex items-center justify-center">
-            <button
-              placeholder="SignIn"
-              className="w-48 h-12 rounded-2xl border-2 border-textWhiteH text-textWhite"
-              onClick={() => {
-                setLoginState("registered");
-                localStorage.removeItem("authId");
-                localStorage.removeItem("authUserName");
-                localStorage.removeItem("authName");
-              }}
-            >
-              {loginState === null ? "Sign In" : "Sign Out"}
-            </button>
+            <div className="w-[100%] h-[10%] flex items-center justify-evenly">
+              <button
+                placeholder="SignIn"
+                className="w-48 h-12 rounded-2xl border-2 border-textWhiteH text-textWhite"
+                onClick={() => {
+                  setLoginState("registered");
+                  localStorage.removeItem("authId");
+                  localStorage.removeItem("authUserName");
+                  localStorage.removeItem("authName");
+                  localStorage.removeItem("authTime");
+                }}
+              >
+                {loginState === null ? "Sign In" : "Sign Out"}
+              </button>
+              <SunIcon className="w-8 h-8 text-textWhiteH" />
             </div>
             <div className="w-full h-[90%]">
               <TrendingList />

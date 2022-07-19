@@ -11,15 +11,20 @@ require("dotenv").config();
 
 const main = async () => {
   const AppDataSource = new DataSource({
-    type: process.env.DATABASE_TYPE as "postgres",
-    host: process.env.DATABASE_HOST,
-    port: parseInt(process.env.DATABASE_PORT as string),
-    username: process.env.DATABASE_USER as string,
-    password: process.env.DATABASE_PASSWORD as string,
-    database: process.env.DATABASE_NAME as string,
+
+    type: "postgres",
+    url: process.env.DATABASE_URL,
+    // host: process.env.DATABASE_HOST,
+    // port: parseInt(process.env.DATABASE_PORT as string),
+    // username: process.env.DATABASE_USER as string,
+    // password: process.env.DATABASE_PASSWORD as string,
+    // database: process.env.DATABASE_NAME as string,
+    ssl: {
+      rejectUnauthorized: false,
+    },
     synchronize: true,
-    logging: true,
-    entities: ["src/entity/**/*.ts"],
+    logging: false,
+    entities: ["dist/entity/**/*.js"],
     // cache: {
     //   duration: 100,
     //   type: "database"
@@ -38,6 +43,8 @@ const main = async () => {
   const server = new ApolloServer({
     schema,
     context: ({ req, res }) => ({ req, res }),
+    persistedQueries: false,
+    cache: "bounded",
   });
 
   await server.start();
@@ -54,7 +61,7 @@ const main = async () => {
     },
   });
 
-  app.listen(4000, () => {
+  app.listen(process.env.PORT || 4000, () => {
     console.log("Server Running on http://localhost:4000");
   });
 };

@@ -8,7 +8,7 @@ import { verify } from "jsonwebtoken";
 class ReplyResolver {
   @Query(() => [Reply])
   async getReplies(@Arg("tweetId") id: number, @Ctx() ctx: MyCtx) {
-    if (ctx.req.cookies["access-token"] === undefined) return null;
+    if (ctx.req.cookies["refresh-token"] === undefined) return null;
 
     const tweet = await Tweet.find({ where: { id }, relations: ["replies"] });
 
@@ -27,7 +27,7 @@ class ReplyResolver {
     @Arg("description") description: string,
     @Ctx() ctx: MyCtx
   ) {
-    if (ctx.req.cookies["access-token"] === undefined) return false;
+    if (ctx.req.cookies["refresh-token"] === undefined) return false;
 
     const tweet = await Tweet.findOne({
       where: {
@@ -41,7 +41,7 @@ class ReplyResolver {
     const reply = new Reply();
 
     const token: tokenResponse = verify(
-      ctx.req.cookies["access-token"],
+      ctx.req.cookies["refresh-token"],
       process.env.JWT_SECRET as string
     ) as tokenResponse;
 

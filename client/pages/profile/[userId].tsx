@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { ArrowLeftIcon } from "@heroicons/react/outline";
+import { ArrowLeftIcon, ChevronDownIcon } from "@heroicons/react/outline";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -20,6 +20,8 @@ const Index = () => {
   const [usernameActiveField, setUsernameActiveField] = React.useState(false);
 
   const [passwordActiveField, setPasswordActiveField] = React.useState(false);
+
+  const [isReplyActive, setIsReplyActive] = React.useState(false);
 
   const [passwords, setPasswords] = React.useState<{
     oldPassword: string;
@@ -102,12 +104,18 @@ const Index = () => {
   };
 
   useEffect(() => {
+    window.addEventListener("keyup", (e) => {
+      if (e.key === "Escape") {
+        setUsernameActiveField(false);
+        setPasswordActiveField(false);
+      }
+    });
     setLoginedUser(parseFloat(localStorage.getItem("authId") as string));
     if (
       (new Date().getTime() -
         parseInt(localStorage.getItem("authTime") as string)) /
-        (1000 * 60) >
-      15.0
+        (1000 * 60 * 60 * 24) >
+      1.0
     ) {
       localStorage.removeItem("authId");
       localStorage.removeItem("authUserName");
@@ -156,6 +164,7 @@ const Index = () => {
             userDetails={
               data?.getTweetsForUser ? data?.getTweetsForUser[0]?.user : {}
             }
+            openTweetBox={() => {}}
           />
           <div className="w-full md:w-[50%] lg:w-[60%] xl:w-[55%] border-r-2 border-r-gray100">
             <div className="w-full h-2/3 border-b-2 border-gray100">
@@ -322,14 +331,62 @@ const Index = () => {
                   }
                 })()}
               </div>
-              <div className="overflow-y-scroll w-full h-[80%] scrollbar-hide">
-                {data?.getTweetsForUser?.map((tweet: any) => {
+              <div className="overflow-y-scroll w-full h-[80%] scrollbar-hide bg-black">
+                {data?.getTweetsForUser?.map((tweet: any, idx: number) => {
                   return (
-                    <Feed
-                      key={tweet?.id}
-                      style="bg-black w-full h-fit scrollbar-hide p-4 flex flex-col items-center"
-                      tweet={tweet}
-                    />
+                    <div className="flex flex-col items-center" key={idx}>
+                      <Feed
+                        key={tweet?.id}
+                        style="bg-black w-full h-fit scrollbar-hide p-4 flex flex-col items-center"
+                        tweet={tweet}
+                        replyCount={
+                          data?.getTweetsForUser[idx]?.replies?.length
+                        }
+                      />
+                      <div className="w-[95%] h-fit -mt-2 mb-4 flex flex-col justify-between border-b-2 border-b-accentGray pb-2">
+                        {(() => {
+                          if (
+                            data?.getTweetsForUser[idx]?.replies?.length !== 0
+                          ) {
+                            return (
+                              <div className="flex space-x-4">
+                                <p className="text-textWhiteH text-2xl font-medium mb-4 ml-2">
+                                  Replies
+                                </p>
+                                <ChevronDownIcon
+                                  onClick={() => {
+                                    setIsReplyActive(!isReplyActive);
+                                  }}
+                                  className="w-8 h-8 text-twitterBlue"
+                                />
+                              </div>
+                            );
+                          }
+                        })()}
+                        <div className="">
+                          {isReplyActive
+                            ? data?.getTweetsForUser[idx]?.replies?.map(
+                                (tweetX: any, index: number) => {
+                                  if (index > 2) return null;
+                                  return (
+                                    <div
+                                      key={index}
+                                      className="flex flex-col md:px-8 md:min-w-[300px] w-fit px-10 items-start justify-between text-textWhiteH mx-4 mb-4 py-2 border-2 border-twitterBlue rounded-xl"
+                                    >
+                                      <p className="text-md font-medium transform text-accentGray">
+                                        Replied By {tweetX?.repliedUsername}
+                                      </p>
+                                      <p className="text-xl font-medium">
+                                        {tweetX?.description}
+                                      </p>
+                                    </div>
+                                  );
+                                }
+                              )
+                            : null}
+                        </div>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
@@ -338,19 +395,19 @@ const Index = () => {
           </div>
           <div className="hidden md:flex-col md:flex-1 md:flex justify-between pt-5">
             <div className="w-[100%] h-[10%] flex items-center justify-center">
-            <button
-              placeholder="SignIn"
-              className="w-48 h-12 rounded-2xl border-2 border-textWhiteH text-textWhite"
-              onClick={() => {
-                localStorage.removeItem("authId");
-                localStorage.removeItem("authUserName");
-                localStorage.removeItem("authName");
-                localStorage.removeItem("authTime");
-                window.location.href = "/";
-              }}
-            >
-              {"Sign Out"}
-            </button>
+              <button
+                placeholder="SignIn"
+                className="w-48 h-12 rounded-2xl border-2 border-textWhiteH text-textWhite"
+                onClick={() => {
+                  localStorage.removeItem("authId");
+                  localStorage.removeItem("authUserName");
+                  localStorage.removeItem("authName");
+                  localStorage.removeItem("authTime");
+                  window.location.href = "/";
+                }}
+              >
+                {"Sign Out"}
+              </button>
             </div>
             <div className="w-full h-[90%]">
               <TrendingList />

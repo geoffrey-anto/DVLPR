@@ -33,6 +33,10 @@ class Tweet extends BaseEntity{
     @Column()
     @Field(() => Int, {defaultValue: 0})
     likes: number;
+
+    @Column("int",{nullable: true, default: [], array: true})
+    @Field(() => [Int], {nullable: true})
+    likesIds: number[];
     
     @Column()
     @Field(() => Boolean)
