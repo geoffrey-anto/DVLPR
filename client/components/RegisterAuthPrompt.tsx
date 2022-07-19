@@ -48,7 +48,7 @@ const AuthPrompt = ({
         className="w-[110vw] h-[110vh] fixed z-20 object-fill blur-md"
       />
     <div className={`${style} h-full z-30 opacity-100`}>
-    <p className="absolute top-8 left-[40%] font-bold text-6xl text-textWhiteH font-mono">DeVeLoPeR</p>
+    <p className="absolute top-8 w-full px-2 font-bold text-6xl text-textWhiteH font-mono">DEVLPR</p>
       <div className="flex items-center px-8 ">
         <div
           onClick={() => {

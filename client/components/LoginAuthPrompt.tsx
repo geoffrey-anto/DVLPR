@@ -50,7 +50,7 @@ function LoginAuthPrompt({
       />
       <div className={`${style} h-full z-30`}>
         <Toaster />
-        <p className="absolute top-8 left-[40%] font-bold text-6xl text-textWhiteH font-mono">DeVeLoPeR</p>
+        <p className="absolute top-8 left-[43%] font-bold text-6xl text-textWhiteH font-mono">DEVLPR</p>
         <div className="flex items-center px-8">
           <div
             onClick={() => {

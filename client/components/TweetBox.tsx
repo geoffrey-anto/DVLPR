@@ -12,8 +12,9 @@ import toast, { Toaster } from "react-hot-toast";
 import { ADD_TWEET } from "../graphql/Mutation";
 import { GET_ALL_TWEETS } from "../graphql/Query";
 import TweetButton from "./TweetButton";
+import Compressor from "compressorjs";
 
-function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
+function TweetBox({ openDrawer }: { openDrawer: (val: boolean) => void }) {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<string | null>("");
   const [isImageSeleted, setIsImageSeleted] = useState(false);
@@ -29,8 +30,9 @@ function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
     }
     const x = toast("Tweeting...", {});
     const id = localStorage.getItem("authId");
+
     let response;
-    try{
+    try {
       response = await addTweet({
         variables: {
           addTweetId: parseFloat(id!),
@@ -64,22 +66,26 @@ function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
   };
 
   function encodeImageFileAsURL(element: ChangeEvent<HTMLInputElement>) {
-    if(element.target.files) {
-      try{
+    if (element.target.files) {
+      try {
         var file = element?.target?.files[0] as File;
-        var reader = new FileReader();
-        reader.onloadend = function() {
-          setImage(reader.result as string);
-        }
-        reader.readAsDataURL(file);
-      } catch(error) {
+        new Compressor(file, {
+          quality: 0.6,
+          success(file_) {
+            var reader = new FileReader();
+            reader.onloadend = function () {
+              setImage(reader.result as string);
+            };
+            reader.readAsDataURL(file_);
+          },
+        });
+      } catch (error) {
         console.log(error);
       }
     } else {
       setImage("");
     }
   }
-  
 
   return (
     <div className="bg-black w-full h-fit pb-4 rounded-lg border-2 border-textWhiteH">
@@ -87,14 +93,18 @@ function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
       <div className="w-full sm:w-full flex flex-row items-center justify-between text-textWhiteH px-8 py-4 ">
         <p className="text-2xl font-bold">Home</p>
         <div className="hidden z-50 w-[40px] md:flex sm:h-10 sm:w-10">
-          <StarIcon onClick={() => {
-            openDrawer(true)
-          }}/>
+          <StarIcon
+            onClick={() => {
+              openDrawer(true);
+            }}
+          />
         </div>
         <div className="relative z-50 w-[40px] md:hidden sm:h-10 sm:w-10">
-          <MenuIcon onClick={() => {
-            openDrawer(true)
-          }}/>
+          <MenuIcon
+            onClick={() => {
+              openDrawer(true);
+            }}
+          />
         </div>
       </div>
       <div className="flex flex-row items-center justify-center lg:items-start lg:justify-between w-full h-full px-0 lg:px-5">
@@ -147,7 +157,7 @@ function TweetBox({openDrawer}: {openDrawer: (val: boolean) => void}) {
                 className={!isImageSeleted ? "hidden" : "my-2 text-textWhite"}
                 type={"file"}
                 onChange={(e) => {
-                  encodeImageFileAsURL(e)
+                  encodeImageFileAsURL(e);
                 }}
               />
               <TweetButton styles="text-black bg-twitterBlue h-12 w-[20%] text-center rounded-full text-lg md:text-xl text-bold" />
