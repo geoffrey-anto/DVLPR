@@ -67,7 +67,7 @@ const Home: NextPage = () => {
     return (
       <>
         <Head>
-          <title>Twitter</title>
+          <title>Dvlpr</title>
         </Head>
         <div className="p-0 m-0 h-screen w-screen bg-black flex flex-row overflow-y-hidden">
           {(() => {
