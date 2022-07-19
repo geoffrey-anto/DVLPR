@@ -56,7 +56,7 @@ const main = async () => {
         "http://localhost:3000",
         "http://localhost:4000/graphql",
         "https://studio.apollographql.com",
-        "https://twitter-for-developers-geoffrey-anto.vercel.app/",
+        "https://twitter-for-developers-geoffrey-anto.vercel.app",
       ],
       credentials: true,
     },
