@@ -1,5 +1,6 @@
 import { ApolloError, useQuery } from "@apollo/client";
 import { ArrowUpIcon, ChevronDownIcon } from "@heroicons/react/outline";
+import { Jelly } from "@uiball/loaders";
 import { useEffect, useState } from "react";
 import { GET_ALL_TWEETS } from "../graphql/Query";
 import Feed from "./Feed";
@@ -82,8 +83,8 @@ function TweetFeed({ openDrawer, isOpen }: { openDrawer: (val: boolean) => void,
         {(() => {
           if (loading) {
             return (
-              <div className="text-textWhiteH flex items-center justify-center h-full text-2xl">
-                ...
+              <div className="text-textWhiteH absolute top-[70%] ml-auto right-1/2 text-2xl">
+                <Jelly color={"#1D9BF0"} size={50}/>
               </div>
             );
           } else if (error) {

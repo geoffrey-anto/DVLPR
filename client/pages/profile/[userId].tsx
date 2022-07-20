@@ -11,6 +11,7 @@ import { CHANGE_USER_NAME, CHANGE_USER_PASSWORD } from "../../graphql/Mutation";
 import { GET_TWEETS_FOR_USER } from "../../graphql/Query";
 import { checkPasswordChangeInputs } from "../../utils/CheckPasswordChangeInputs";
 import TrendingList from "../../components/TrendingList";
+import { Jelly } from "@uiball/loaders";
 
 const Index = () => {
   const uId = useRouter().query.userId;
@@ -33,7 +34,7 @@ const Index = () => {
 
   const [newUserName, setNewUserName] = React.useState("");
 
-  const { data } = useQuery(GET_TWEETS_FOR_USER, {
+  const { data, loading } = useQuery(GET_TWEETS_FOR_USER, {
     variables: {
       getTweetsForUserId: parseFloat(uId as string),
     },
@@ -175,7 +176,17 @@ const Index = () => {
                   </div>
                 </Link>
               </div>
-              <div className="bg-gray100 w-full h-[25%]"></div>
+              {(() => {
+            if (loading) {
+              return (
+                <div className="w-full h-screen flex items-center justify-center bg-black">
+                  <Jelly color={"#1D9BF0"} size={50} />
+                </div>
+              );
+            } else {
+              return (
+                <>
+                  <div className="bg-gray100 w-full h-[25%]"></div>
               <div className="flex flex-col w-full items-center justify-center mb-4">
                 <div>
                   <img
@@ -390,9 +401,14 @@ const Index = () => {
                   );
                 })}
               </div>
+                </>
+              );
+            }})()}
+              
             </div>
             {<div className="overflow-y-scroll scrollbar-hide"></div>}
           </div>
+
           <div className="hidden md:flex-col md:flex-1 md:flex justify-between pt-5">
             <div className="w-[100%] h-[10%] flex items-center justify-center">
               <button
