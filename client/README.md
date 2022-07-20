@@ -1,11 +1,21 @@
-# A Tweeting App For Developers
+# Frontend for the Web App
 
-##  -------------------------------------------- On Progress ---------------------------------------------
+-------
+ 
+## Tech Stack
 
-![image](https://user-images.githubusercontent.com/91791834/179302145-978e067c-1cdf-4119-8e38-2ae0046072c7.png)
+- NextJS / ReactJS
+- Apollo Client
+- Typescript
+- Tailwind Css
+- GraphQL
 
-![image](https://user-images.githubusercontent.com/91791834/179302614-ba54ca74-ffd7-4dcb-a834-924ba027c679.png)
+-------
 
-![image](https://user-images.githubusercontent.com/91791834/179302927-41c23105-7ba9-4ce8-a1ef-855eb0a6d7c1.png)
+![image](https://user-images.githubusercontent.com/91791834/179819426-694b48b5-4fa5-42ea-bc40-8ca6099a448c.png)
 
-![image](https://user-images.githubusercontent.com/91791834/179302961-718a0958-b1ea-4da9-b3e0-2c615bdd5120.png)
+![image](https://user-images.githubusercontent.com/91791834/179819317-0e5e3999-4181-4026-980f-47090a596f3d.png)
+
+![image](https://user-images.githubusercontent.com/91791834/179819678-4815f2e3-a536-4036-a898-669edf53666e.png)
+
+![image](https://user-images.githubusercontent.com/91791834/179819832-917c704d-e6c1-403d-b1c9-36760342cb3b.png)
