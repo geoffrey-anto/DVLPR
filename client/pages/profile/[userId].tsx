@@ -3,7 +3,7 @@ import { ArrowLeftIcon, ChevronDownIcon } from "@heroicons/react/outline";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import Feed from "../../components/Feed";
 import SideBar from "../../components/SideBar";
@@ -43,6 +43,8 @@ const Index = () => {
   const [changeUserName] = useMutation(CHANGE_USER_NAME);
 
   const [changeUserPassword] = useMutation(CHANGE_USER_PASSWORD);
+
+  const [userDetails, setUserDetails] = useState({})
 
   const changeUserNameHandler = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -105,6 +107,18 @@ const Index = () => {
   };
 
   useEffect(() => {
+    const authId = localStorage.getItem("authId");
+    const authUserName = localStorage.getItem("authUserName");
+    const authName = localStorage.getItem("authName");
+
+    const data = {
+      id: parseFloat(authId as string),
+      username: authUserName,
+      name: authName,
+    }
+
+    setUserDetails(data);
+
     window.addEventListener("keyup", (e) => {
       if (e.key === "Escape") {
         setUsernameActiveField(false);
@@ -163,7 +177,7 @@ const Index = () => {
             containerStyle={undefined}
             isMobile={false}
             userDetails={
-              data?.getTweetsForUser ? data?.getTweetsForUser[0]?.user : {}
+              userDetails
             }
             openTweetBox={() => {}}
           />
