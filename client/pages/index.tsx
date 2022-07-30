@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import LoginAuthPrompt from "../components/LoginAuthPrompt";
 import RegisterAuthPrompt from "../components/RegisterAuthPrompt";
 import SideBar from "../components/SideBar";
@@ -33,6 +33,16 @@ const Home: NextPage = () => {
       console.log("Please Login Or Register");
     }
   };
+
+  // useLayoutEffect(() => {
+  //   console.log("!");
+  //   document.addEventListener("keypress", (e) => {
+  //     if (e.key === "Escape") {
+  //       setSideBarState(false);
+  //     }
+  //   });
+  // }, []);
+
   useEffect(() => {
     window.addEventListener("resize", () => {
       if (window.screen.availWidth < 768) {

@@ -27,8 +27,8 @@ function Home() {
       tweetId: parseFloat(router.query.userId as string),
     },
   });
+  
   useEffect(() => {
-    console.log(localStorage.getItem("authId"));
     if (
       (new Date().getTime() -
         parseInt(localStorage.getItem("authTime") as string)) /
@@ -82,7 +82,7 @@ function Home() {
             } else {
               return (
                 <div className="flex justify-center">
-                  <div className="w-[60%] h-fit">
+                  <div className="w-full md:w-[60%] lg:h-fit">
                     <Feed
                       style=""
                       tweet={data?.getTweetById}

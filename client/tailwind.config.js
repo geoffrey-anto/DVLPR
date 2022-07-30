@@ -14,9 +14,10 @@ module.exports = {
       twitterBlue: "#1D9BF0",
       accentGray: "#64686D",
       lightGray: "#E0E0E0",
-    }
+    },
   },
-  plugins: [
-    require('tailwind-scrollbar-hide'),
-  ],
+  plugins: [require("tailwind-scrollbar-hide"), require("tailwind-scrollbar")],
+  variants: {
+    scrollbar: ["rounded"],
+  },
 };

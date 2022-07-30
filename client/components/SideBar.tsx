@@ -18,7 +18,12 @@ interface Props {
   openTweetBox: () => void;
 }
 
-const SideBar = ({ userDetails, containerStyle, isMobile, openTweetBox }: Props) => {
+const SideBar = ({
+  userDetails,
+  containerStyle,
+  isMobile,
+  openTweetBox,
+}: Props) => {
   return (
     <div
       className={
@@ -58,26 +63,45 @@ const SideBar = ({ userDetails, containerStyle, isMobile, openTweetBox }: Props)
         })()}
       </div>
       <div className="w-full h-[65%] flex flex-col justify-evenly items-center">
-        <div className="w-full h-[75%] flex flex-col">
+        <div className="w-full h-[75%] flex flex-col item-start justify-around">
           <Link href={"/"}>
             <a className="mb-2">
               <NavComponent Component={HomeIcon} text="Home" />
             </a>
           </Link>
-          <NavComponent Component={HashtagIcon} text="Hashtags" />
-          <NavComponent Component={BellIcon} text="Alerts" />
-          <NavComponent Component={InboxIcon} text="Messages" />
-          <NavComponent Component={BookmarkIcon} text="Bookmarks" />
+          <Link href={"/"}>
+            <a>
+              <NavComponent Component={HashtagIcon} text="Hashtags" />
+            </a>
+          </Link>
+          <Link href={"/"}>
+            <a>
+              <NavComponent Component={BellIcon} text="Alerts" />
+            </a>
+          </Link>
+          <Link href={"/"}>
+            <a>
+              <NavComponent Component={InboxIcon} text="Messages" />
+            </a>
+          </Link>
+          <Link href={"/"}>
+            <a>
+              <NavComponent Component={BookmarkIcon} text="Bookmarks" />
+            </a>
+          </Link>
           <Link href={"/profile/" + userDetails?.id}>
-            <a className="mt-2">
+            <a>
               <NavComponent Component={UserIcon} text="Profile" />
             </a>
           </Link>
         </div>
-        <div onClick={() => {
-          openTweetBox();
-        }} className="h-[13%] w-[65%] mt-5 rounded-full overflow-hidden">
-        <TweetButton styles="w-full h-full text-black bg-twitterBlue text-center" />
+        <div
+          onClick={() => {
+            openTweetBox();
+          }}
+          className="h-[13%] w-[65%] mt-5 rounded-full overflow-hidden"
+        >
+          <TweetButton styles="w-full h-full text-black bg-twitterBlue text-center" />
         </div>
       </div>
       <div className="w-full h-[18%] flex flex-row justify-evenly items-center">

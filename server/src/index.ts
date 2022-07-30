@@ -13,18 +13,20 @@ const main = async () => {
   const AppDataSource = new DataSource({
 
     type: "postgres",
-    url: process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL, // uncomment this line for production
+    // url: "postgres://postgres:geoffrey@localhost:5432/test2", // --Comment this line out when deploying to heroku
     // host: process.env.DATABASE_HOST,
     // port: parseInt(process.env.DATABASE_PORT as string),
     // username: process.env.DATABASE_USER as string,
     // password: process.env.DATABASE_PASSWORD as string,
     // database: process.env.DATABASE_NAME as string,
     ssl: {
-      rejectUnauthorized: false,
+      rejectUnauthorized: false, // Un Comment During Production // uncomment this line for production
     },
-    synchronize: true,
-    logging: false,
-    entities: ["dist/entity/**/*.js"],
+    synchronize: true, 
+    logging: false, // Un Comment During Production
+    entities: ["dist/entity/**/*.js"], // Un Comment During Production
+    // entities: ["src/entity/**/*.ts"], // --Comment this line out when deploying to heroku
     // cache: {
     //   duration: 100,
     //   type: "database"

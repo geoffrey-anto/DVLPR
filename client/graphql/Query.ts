@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_ALL_TWEETS = gql`
-  query getAllTweets {
-    getAllTweets {
+  query getAllTweets($limit: Float!) {
+    getAllTweets(limit: $limit) {
       id
       description
       image

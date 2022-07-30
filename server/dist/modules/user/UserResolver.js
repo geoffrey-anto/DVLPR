@@ -153,7 +153,7 @@ let RegisterResolver = class RegisterResolver {
                 user_Name: user.name,
                 user_Email: user.email,
             }, process.env.JWT_SECRET, {
-                expiresIn: "7d",
+                expiresIn: "1d",
             });
             const accessToken = (0, jsonwebtoken_1.sign)({
                 user_Id: user.id,
@@ -171,7 +171,7 @@ let RegisterResolver = class RegisterResolver {
                     secure: true,
                 });
                 ctx.res.cookie("refresh-token", refreshToken, {
-                    expires: new Date(Date.now() + 60 * 60 * 24 * 7 * 1000),
+                    expires: new Date(Date.now() + 60 * 60 * 24 * 1 * 1000),
                     httpOnly: true,
                     sameSite: "none",
                     secure: true,
@@ -185,10 +185,10 @@ let RegisterResolver = class RegisterResolver {
     }
     changeUsername(email, newUsername, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined) {
+            if (ctx.req.cookies["refresh-token"] === undefined) {
                 return false;
             }
-            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["refresh-token"], process.env.JWT_SECRET);
             if (email === token.user_Email) {
                 const user = yield User_1.User.findOneBy({ email });
                 if (user === null) {
@@ -205,11 +205,11 @@ let RegisterResolver = class RegisterResolver {
     }
     deleteUser(email, password, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined) {
+            if (ctx.req.cookies["refresh-token"] === undefined) {
                 return false;
             }
             try {
-                const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+                const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["refresh-token"], process.env.JWT_SECRET);
                 const user = yield User_1.User.findOneBy({ email });
                 if (user === null) {
                     return false;
@@ -232,7 +232,7 @@ let RegisterResolver = class RegisterResolver {
     }
     changeUserPassword(email, oldPassword, newPassword, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined) {
+            if (ctx.req.cookies["refresh-token"] === undefined) {
                 return false;
             }
             try {
@@ -240,7 +240,7 @@ let RegisterResolver = class RegisterResolver {
                 if (user === null) {
                     return false;
                 }
-                const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+                const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["refresh-token"], process.env.JWT_SECRET);
                 if (token.user_Email !== email) {
                     return false;
                 }
@@ -262,7 +262,7 @@ let RegisterResolver = class RegisterResolver {
         return __awaiter(this, void 0, void 0, function* () {
             if (limit < 1)
                 return [];
-            if (ctx.req.cookies["access-token"] === undefined) {
+            if (ctx.req.cookies["refresh-token"] === undefined) {
                 return [];
             }
             try {

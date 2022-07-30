@@ -24,14 +24,13 @@ const ReplyResolver_1 = require("./modules/reply/ReplyResolver");
 require("dotenv").config();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const AppDataSource = new typeorm_1.DataSource({
-        type: process.env.DATABASE_TYPE,
-        host: process.env.DATABASE_HOST,
-        port: parseInt(process.env.DATABASE_PORT),
-        username: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_NAME,
+        type: "postgres",
+        url: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false,
+        },
         synchronize: true,
-        logging: true,
+        logging: false,
         entities: ["dist/entity/**/*.js"],
     });
     AppDataSource.initialize();
@@ -43,6 +42,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const server = new apollo_server_express_1.ApolloServer({
         schema,
         context: ({ req, res }) => ({ req, res }),
+        persistedQueries: false,
+        cache: "bounded",
     });
     yield server.start();
     server.applyMiddleware({
@@ -52,11 +53,14 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 "http://localhost:3000",
                 "http://localhost:4000/graphql",
                 "https://studio.apollographql.com",
+                "https://twitter-for-developers-geoffrey-anto.vercel.app",
+                "https://dvlprrr-geoffrey-anto.vercel.app",
+                "https://dvlpr-geoffrey-anto.vercel.app"
             ],
             credentials: true,
         },
     });
-    app.listen(4000, () => {
+    app.listen(process.env.PORT || 4000, () => {
         console.log("Server Running on http://localhost:4000");
     });
 });

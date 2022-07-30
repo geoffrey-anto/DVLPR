@@ -46,9 +46,9 @@ TweetInput = __decorate([
     (0, type_graphql_1.InputType)()
 ], TweetInput);
 let TweetResolver = class TweetResolver {
-    getAllTweets(ctx) {
+    getAllTweets(ctx, limit) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return null;
             const tweets = yield Tweet_1.Tweet.find({
                 relations: ["user", "replies"],
@@ -57,6 +57,7 @@ let TweetResolver = class TweetResolver {
                         direction: "DESC",
                     },
                 },
+                take: limit,
             });
             if (tweets.length === 0)
                 return [];
@@ -65,7 +66,7 @@ let TweetResolver = class TweetResolver {
     }
     getTweetById(id, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return null;
             const tweet = yield Tweet_1.Tweet.findOne({
                 where: { id: id },
@@ -76,20 +77,22 @@ let TweetResolver = class TweetResolver {
     }
     getTweetsForUser(id, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return null;
             const tweets = yield Tweet_1.Tweet.find({
                 where: { userId: id },
                 relations: ["user", "replies"],
             });
+            if (tweets.length === 0)
+                return null;
             return tweets;
         });
     }
     addTweet(userId, x, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return false;
-            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["refresh-token"], process.env.JWT_SECRET);
             if (token.user_Id !== userId) {
                 return false;
             }
@@ -113,12 +116,12 @@ let TweetResolver = class TweetResolver {
     }
     likeTweet(id, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return false;
             const tweet = yield Tweet_1.Tweet.findOne({ where: { id } });
             if (tweet === null)
                 return false;
-            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["refresh-token"], process.env.JWT_SECRET);
             let isFound = false;
             tweet.likesIds.forEach((element) => {
                 if (element === token.user_Id) {
@@ -136,9 +139,9 @@ let TweetResolver = class TweetResolver {
     }
     retweetTweet(tweetId, userId, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return false;
-            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["refresh-token"], process.env.JWT_SECRET);
             if (token.user_Id !== userId) {
                 return false;
             }
@@ -176,9 +179,9 @@ let TweetResolver = class TweetResolver {
     }
     deleteTweet(id, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return null;
-            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["refresh-token"], process.env.JWT_SECRET);
             const tweet = yield Tweet_1.Tweet.findOne({
                 where: { id: id },
                 relations: ["user", "replies"],
@@ -199,7 +202,7 @@ let TweetResolver = class TweetResolver {
     }
     getTopTweets(limit, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return [];
             if (limit < 0)
                 return [];
@@ -219,8 +222,9 @@ let TweetResolver = class TweetResolver {
 __decorate([
     (0, type_graphql_1.Query)(() => [Tweet_1.Tweet], { nullable: true }),
     __param(0, (0, type_graphql_1.Ctx)()),
+    __param(1, (0, type_graphql_1.Arg)("limit")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], TweetResolver.prototype, "getAllTweets", null);
 __decorate([

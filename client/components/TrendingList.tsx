@@ -5,28 +5,28 @@ import React, { useEffect, useState } from "react";
 import { GET_TOP_TWEETS, GET_TOP_USERS } from "../graphql/Query";
 
 const TrendintList = () => {
-  const [maxRows, setMaxRows] = useState(4);
+  const [maxRows, setMaxRows] = useState(7);
 
   useEffect(() => {
     window.addEventListener("resize", () => {
       if (window.screen.height > 620) {
-        setMaxRows(4);
+        setMaxRows(7);
       } else if (window.screen.height > 480) {
-        setMaxRows(3);
+        setMaxRows(5);
       } else {
-        setMaxRows(2);
+        setMaxRows(3);
       }
     });
   }, []);
 
   const { data: topUserData } = useQuery(GET_TOP_USERS, {
     variables: {
-      limit: 5,
+      limit: 7,
     },
   });
   const { data: topTweetData, loading } = useQuery(GET_TOP_TWEETS, {
     variables: {
-      limit: 5,
+      limit: 7,
     },
   });
 
@@ -37,7 +37,7 @@ const TrendintList = () => {
         <p className="w-full text-center mb-4 font-bold text-2xl text-">
           Top Users
         </p>
-
+        <div className="overflow-y-scroll scrollbar-thin scrollbar-thumb-twitterBlue">
         {topUserData &&
           topUserData.getTopUsers &&
           (topUserData.getTopUsers as Array<any>)
@@ -67,6 +67,7 @@ const TrendintList = () => {
                 </div>
               );
             })}
+        </div>
       </div>
 
       {/* Trending Tweets */}
@@ -83,43 +84,48 @@ const TrendintList = () => {
               <p className="w-full text-center mb-4 font-bold text-2xl">
                 Top Tweets
               </p>
-              {topTweetData &&
-                topTweetData.getTopTweets &&
-                (topTweetData.getTopTweets as Array<any>)
-                  .slice(0, maxRows)
-                  .map((tweet: any) => {
-                    return (
-                      <div
-                        key={tweet.id}
-                        className="flex flex-row items-center justify-around px-4 pb-4"
-                      >
-                        <Link href={`/tweet/${tweet.id}`}>
-                          <div className="hover:border-2 hover:border-twitterBlue rounded-lg flex items-center justify-around w-full cursor-pointer">
-                            <img
-                              src={
-                                tweet.image
-                                  ? tweet.image
-                                  : "https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
-                              }
-                              alt=""
-                              className="rounded-full hidden md:flex md:h-10"
-                            />
-                            <div className="flex flex-col items-start justify-center w-40">
-                              <p className="w-full">
-                                {(tweet.description as string).substring(0, 22)}
-                              </p>
-                              <p className="text-accentGray">
-                                {tweet.user?.name}
-                              </p>
+              <div className="overflow-y-scroll scrollbar-thin scrollbar-thumb-twitterBlue">
+                {topTweetData &&
+                  topTweetData.getTopTweets &&
+                  (topTweetData.getTopTweets as Array<any>)
+                    .slice(0, maxRows)
+                    .map((tweet: any) => {
+                      return (
+                        <div
+                          key={tweet.id}
+                          className="flex flex-row items-center justify-around px-4 pb-4"
+                        >
+                          <Link href={`/tweet/${tweet.id}`}>
+                            <div className="hover:border-2 hover:border-twitterBlue rounded-lg flex items-center justify-around w-full cursor-pointer">
+                              <img
+                                src={
+                                  tweet.image
+                                    ? tweet.image
+                                    : "https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
+                                }
+                                alt=""
+                                className="rounded-full hidden md:flex md:h-10"
+                              />
+                              <div className="flex flex-col items-start justify-center w-40">
+                                <p className="w-full">
+                                  {(tweet.description as string).substring(
+                                    0,
+                                    22
+                                  )}
+                                </p>
+                                <p className="text-accentGray">
+                                  {tweet.user?.name}
+                                </p>
+                              </div>
+                              <div className="flex text-textWhite">
+                                {/* <p>{tweet.likes}</p> */}
+                              </div>
                             </div>
-                            <div className="flex text-textWhite">
-                              {/* <p>{tweet.likes}</p> */}
-                            </div>
-                          </div>
-                        </Link>
-                      </div>
-                    );
-                  })}
+                          </Link>
+                        </div>
+                      );
+                    })}
+              </div>
             </div>
           );
         }

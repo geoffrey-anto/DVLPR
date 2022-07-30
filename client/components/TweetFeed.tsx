@@ -1,9 +1,16 @@
-import { ApolloError, useQuery } from "@apollo/client";
+import {
+  ApolloError,
+  ApolloQueryResult,
+  OperationVariables,
+  useQuery,
+} from "@apollo/client";
 import { ArrowUpIcon, ChevronDownIcon } from "@heroicons/react/outline";
 import { Jelly } from "@uiball/loaders";
 import { useEffect, useState } from "react";
 import { GET_ALL_TWEETS } from "../graphql/Query";
-import Feed from "./Feed";
+import Error from "./ErrorComponents/Error";
+import Loading from "./LoadingComponents/Loading";
+import Tweet from "./SubComponents/Tweet";
 import TweetBox from "./TweetBox";
 
 interface User {
@@ -28,22 +35,38 @@ export interface Tweet {
     repliedUsername: string;
   }[];
 }
-interface Data {
+export interface Data {
   getAllTweets: Tweet[];
 }
 
-function TweetFeed({ openDrawer, isOpen }: { openDrawer: (val: boolean) => void, isOpen: boolean }) {
+function TweetFeed({
+  openDrawer,
+  isOpen,
+}: {
+  openDrawer: (val: boolean) => void;
+  isOpen: boolean;
+}) {
   const {
     loading,
     error,
     data: resp,
+    refetch,
   }: {
     error?: ApolloError | undefined;
     loading?: boolean;
     data?: Data;
-  } = useQuery(GET_ALL_TWEETS);
+    refetch: (
+      variables?: Partial<OperationVariables> | undefined
+    ) => Promise<ApolloQueryResult<any>>;
+  } = useQuery(GET_ALL_TWEETS, {
+    variables: {
+      limit: 10,
+    },
+  });
 
   const [data, setData] = useState<Data>();
+
+  const [currentTweetsSize, setCurrentTweetsSize] = useState(10);
 
   useEffect(() => {
     setData(resp);
@@ -63,13 +86,22 @@ function TweetFeed({ openDrawer, isOpen }: { openDrawer: (val: boolean) => void,
 
   useEffect(() => {
     window.addEventListener("scroll", toggleVisible);
-  }, [])
+  }, []);
+
+  const refetchMoreTweet = () => {
+    refetch({
+      limit: currentTweetsSize + 10,
+    });
+    setCurrentTweetsSize(currentTweetsSize + 10);
+  };
 
   return (
-    <div className="bg-black w-full md:w-[50%] lg:w-[55%] xl:w-[58%] border border-r-gray100 overflow-x-scroll scrollbar-hide h-auto">
-      {isOpen ? <div className="flex md:sticky top-6 px-8">
-        <TweetBox openDrawer={openDrawer} />
-      </div> : null}
+    <div className="bg-black w-full md:w-[50%] lg:w-[55%] xl:w-[58%] border border-r-gray100 overflow-y-scroll scrollbar-thin scrollbar-thumb-twitterBlue scrollbar-track-black h-auto">
+      {isOpen ? (
+        <div className="flex md:sticky top-6 px-8">
+          <TweetBox openDrawer={openDrawer} />
+        </div>
+      ) : null}
       <div
         className={
           visible
@@ -84,62 +116,47 @@ function TweetFeed({ openDrawer, isOpen }: { openDrawer: (val: boolean) => void,
           if (loading) {
             return (
               <div className="text-textWhiteH absolute top-[70%] ml-auto right-1/2 text-2xl">
-                <Jelly color={"#1D9BF0"} size={50}/>
+                <Jelly color={"#1D9BF0"} size={50} />
               </div>
             );
           } else if (error) {
-            return <div className="text-textWhiteH">Error</div>;
+            return (
+              <div className="w-full h-screen">
+                <Error />;
+              </div>
+            );
           } else {
             return (
-              <div className="mt-10">
-                {data?.getAllTweets?.map((tweet, idx) => {
-                  return (
-                    <div className="flex flex-col items-center" key={idx}>
-                      <Feed style={undefined} key={tweet.id} tweet={tweet} replyCount={undefined}/>;
-                      <div className="w-[95%] h-fit -mt-10 mb-4 flex flex-col justify-between border-b-2 border-b-accentGray pb-2">
-                        {(() => {
-                          if (data?.getAllTweets[idx]?.replies?.length !== 0) {
-                            return (
-                              <div className="flex space-x-4">
-                                <p className="text-textWhiteH text-2xl font-medium mb-4 ml-2">
-                                  Replies
-                                </p>
-                                <ChevronDownIcon
-                                  onClick={() => {
-                                    setIsReplyActive(!isReplyActive);
-                                  }}
-                                  className="w-8 h-8 text-twitterBlue cursor-pointer"
-                                />
-                              </div>
-                            );
-                          }
-                        })()}
-                        <div className="">
-                          {isReplyActive
-                            ? data?.getAllTweets[idx].replies?.map(
-                                (tweetX, index: number) => {
-                                  if (index > 2) return null;
-                                  return (
-                                    <div
-                                      key={index}
-                                      className="flex flex-col md:px-8  md:min-w-[300px] w-fit px-10 items-start justify-between text-textWhiteH mx-4 mb-4 py-2 border-2 border-twitterBlue rounded-xl"
-                                    >
-                                      <p className="text-md font-medium text-accentGray">
-                                        Replied By {tweetX.repliedUsername}
-                                      </p>
-                                      <p className="text-xl font-medium">
-                                        {tweetX.description}
-                                      </p>
-                                    </div>
-                                  );
-                                }
-                              )
-                            : null}
-                        </div>
+              <div>
+                <div className="mt-10">
+                  {data?.getAllTweets?.map((tweet, idx) => {
+                    return (
+                      <Tweet
+                        data={data}
+                        idx={idx}
+                        key={tweet.id}
+                        tweet={tweet}
+                        isReplyActive={isReplyActive}
+                        setIsReplyActive={setIsReplyActive}
+                      />
+                    );
+                  })}
+                </div>
+                {loading ? (
+                  <Loading />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-20">
+                    <div
+                      onClick={refetchMoreTweet}
+                      className="flex items-center justify-center cursor-pointer text-textWhiteH hover:text-twitterBlue "
+                    >
+                      <p className="text-xl">Load More&nbsp;&nbsp;</p>
+                      <div className="mt-1 w-8 h-8">
+                        <ChevronDownIcon />
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                )}
               </div>
             );
           }

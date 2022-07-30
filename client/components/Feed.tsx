@@ -1,5 +1,4 @@
 import {
-  ArrowLeftIcon,
   DotsHorizontalIcon,
   HeartIcon,
   RefreshIcon,
@@ -14,8 +13,18 @@ import Link from "next/link";
 import { REPLY_FOR_TWEET, RETWEET_TWEET } from "../graphql/Mutation";
 import toast, { Toaster } from "react-hot-toast";
 import { formatDate } from "../utils/FormatDate";
+import { Reply } from "./SubComponents/Reply";
+import { getFirstXWords, getWordCount } from "../utils/GetWordCount";
 
-function Feed({ tweet, style, replyCount }: { tweet: Tweet; style: string | undefined; replyCount: number | undefined }) {
+function Feed({
+  tweet,
+  style,
+  replyCount,
+}: {
+  tweet: Tweet;
+  style: string | undefined;
+  replyCount: number | undefined;
+}) {
   const [likeTweet, { loading }] = useMutation(LIKE_TWEET, {
     refetchQueries: [{ query: GET_ALL_TWEETS }, "getAllTweets"],
   });
@@ -32,16 +41,34 @@ function Feed({ tweet, style, replyCount }: { tweet: Tweet; style: string | unde
   const [isReplyActive, setIsReplyActive] = React.useState(false);
 
   const [replyText, setReplyText] = React.useState("");
-  
+
   const [userId, setUserId] = React.useState(0);
-  
+
   useEffect(() => {
     const id = localStorage.getItem("authId");
     if (id) {
       setUserId(parseInt(id));
     }
-  },[])
-  
+  }, []);
+
+  const UserDetail = () => {
+    if (tweet?.isRepost) {
+      return (
+        <div className="flex flex-col font-semibold w-48 lg:w-full">
+          <p className="text-sm lg:text-lg">Retweeted By {tweet?.user?.name}</p>
+          <p className="text-sm lg:text-lg">@{tweet?.user?.username}</p>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex flex-col font-semibold w-48 lg:w-full">
+          <p className="text-sm lg:text-lg">{tweet?.user?.name}</p>
+          <p className="text-sm lg:text-lg">@{tweet?.user?.username}</p>
+        </div>
+      );
+    }
+  };
+
   if (loading) {
     return <div className="w-full h-full bg-black"></div>;
   }
@@ -61,29 +88,7 @@ function Feed({ tweet, style, replyCount }: { tweet: Tweet; style: string | unde
               className="h-14 w-14 rounded-full"
               src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
             />
-            {(() => {
-              if (tweet?.isRepost) {
-                return (
-                  <div className="flex flex-col font-semibold w-48 lg:w-full">
-                    <p className="text-sm lg:text-lg">
-                      Retweeted By {tweet?.user?.name}
-                    </p>
-                    <p className="text-sm lg:text-lg">
-                      @{tweet?.user?.username}
-                    </p>
-                  </div>
-                );
-              } else {
-                return (
-                  <div className="flex flex-col font-semibold w-48 lg:w-full">
-                    <p className="text-sm lg:text-lg">{tweet?.user?.name}</p>
-                    <p className="text-sm lg:text-lg">
-                      @{tweet?.user?.username}
-                    </p>
-                  </div>
-                );
-              }
-            })()}
+            {UserDetail()}
           </div>
         </Link>
 
@@ -94,11 +99,13 @@ function Feed({ tweet, style, replyCount }: { tweet: Tweet; style: string | unde
       </div>
       <Link href={"/tweet/" + tweet?.id}>
         <div className="flex flex-col items-center h-[55%]">
-          <div className="text-textWhiteH flex flex-col p-6 text-lg lg:text-xl font-light lg:font-light font-sans">
-            <p>{tweet?.description}</p>
+          <div className=" text-textWhiteH flex flex-col p-6 text-lg lg:text-xl font-light lg:font-light font-sans">
+            {getWordCount(tweet?.description) > 80
+              ? getFirstXWords(tweet?.description, 80) + "..."
+              : tweet?.description}
           </div>
           <div className=" max-h-[500px] max-w-[500px]">
-          <img className="object-cover" src={tweet?.image} alt="" />
+            <img className="object-cover" src={tweet?.image} alt="" />
           </div>
         </div>
       </Link>
@@ -108,9 +115,9 @@ function Feed({ tweet, style, replyCount }: { tweet: Tweet; style: string | unde
         </p>
       </div>
       <div className="w-full text-textWhite py-4 border-b-2 border-b-gray100">
-        <div className="w-[70%] md:w-[80%] lg:w-[60%] flex items-center justify-around">
+        <div className="w-full md:w-[80%] lg:w-[60%] flex items-center justify-around">
           <p>{tweet?.repostCount === null ? 0 : tweet?.repostCount} Retweets</p>
-          <p>{tweet?.replies?.length | replyCount as number} Quote Tweets</p>
+          <p>{tweet?.replies?.length | (replyCount as number)} Quote Tweets</p>
           <p>{tweet?.likes} Likes</p>
         </div>
       </div>
@@ -125,53 +132,14 @@ function Feed({ tweet, style, replyCount }: { tweet: Tweet; style: string | unde
             {(() => {
               if (isReplyActive) {
                 return (
-                  <div className="z-40 absolute top-[40%] left-[25%] right-[25%] w-[50%] h-[30%] bg-black border-2 border-textWhiteH">
-                    <div className="w-full flex items-center">
-                      <div className="w-10 h-10 px-2 py-2">
-                        <ArrowLeftIcon
-                          onClick={() => {
-                            setIsReplyActive(!isReplyActive);
-                          }}
-                        />
-                      </div>
-                      <p className="text-lg font-semibold ml-3">
-                        Reply to {tweet?.user?.username}
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-center justify-around h-[60%]">
-                      <input
-                        type={"text"}
-                        onChange={(e) => {
-                          setReplyText(e.target.value);
-                        }}
-                        className="w-[80%] h-12 bg-black border-b-2 border-b-textWhite text-lg pl-2"
-                      />
-                      <button
-                        onClick={async () => {
-                          if (replyText === "") {
-                            toast.error("Please enter a reply");
-                            return;
-                          }
-                          const response = await addReply({
-                            variables: {
-                              tweetId: tweet?.id,
-                              description: replyText,
-                            },
-                          });
-                          if (response.data?.addReplyForTweet) {
-                            toast.success("Reply added successfully");
-                            setIsReplyActive(false);
-                          } else {
-                            toast.error("Something went wrong");
-                            setIsReplyActive(false);
-                          }
-                        }}
-                        className="border-2 border-twitterBlue w-[30%] h-[30%] bg-twitterBlue text-lg font-semibold text-black"
-                      >
-                        Reply!
-                      </button>
-                    </div>
-                  </div>
+                  <Reply
+                    isReplyActive={isReplyActive}
+                    replyText={replyText}
+                    setReplyText={setReplyText}
+                    tweet={tweet}
+                    addReply={addReply}
+                    setIsReplyActive={setIsReplyActive}
+                  />
                 );
               }
             })()}
@@ -204,11 +172,17 @@ function Feed({ tweet, style, replyCount }: { tweet: Tweet; style: string | unde
           <div className="h-6 w-6 cursor-pointer">
             <p className="text-textWhiteH"></p>
             <HeartIcon
-              className={(tweet?.likesIds && (tweet?.likesIds.indexOf(userId) != -1)) ? "text-[#F10C45]" : "text-textWhiteH"}
+              className={
+                tweet?.likesIds && tweet?.likesIds.indexOf(userId) != -1
+                  ? "text-[#F10C45]"
+                  : "text-textWhiteH"
+              }
               onClick={async () => {
                 setIsLiked(!isLiked);
-                const resp = await likeTweet({ variables: { likeTweetId: tweet?.id } });
-                if(resp.data?.likeTweet){
+                const resp = await likeTweet({
+                  variables: { likeTweetId: tweet?.id },
+                });
+                if (resp.data?.likeTweet) {
                   toast.success("Tweet liked successfully");
                 } else {
                   toast.error("Already Liked");

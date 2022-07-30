@@ -29,7 +29,7 @@ const jsonwebtoken_1 = require("jsonwebtoken");
 let ReplyResolver = class ReplyResolver {
     getReplies(id, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return null;
             const tweet = yield Tweet_1.Tweet.find({ where: { id }, relations: ["replies"] });
             if (tweet.length === 0)
@@ -42,7 +42,7 @@ let ReplyResolver = class ReplyResolver {
     }
     addReplyForTweet(tweetId, description, ctx) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (ctx.req.cookies["access-token"] === undefined)
+            if (ctx.req.cookies["refresh-token"] === undefined)
                 return false;
             const tweet = yield Tweet_1.Tweet.findOne({
                 where: {
@@ -53,7 +53,7 @@ let ReplyResolver = class ReplyResolver {
             if (tweet === null)
                 return false;
             const reply = new Reply_1.Reply();
-            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["access-token"], process.env.JWT_SECRET);
+            const token = (0, jsonwebtoken_1.verify)(ctx.req.cookies["refresh-token"], process.env.JWT_SECRET);
             const userName = token.user_UserName;
             reply.repliedUsername = userName;
             reply.description = description;

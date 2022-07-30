@@ -29,7 +29,7 @@ class TweetInput {
 @Resolver(Tweet)
 class TweetResolver {
   @Query(() => [Tweet], { nullable: true })
-  async getAllTweets(@Ctx() ctx: MyCtx) {
+  async getAllTweets(@Ctx() ctx: MyCtx, @Arg("limit") limit: number) {
     if (ctx.req.cookies["refresh-token"] === undefined) return null;
 
     // const token: tokenResponse = verify(
@@ -48,6 +48,7 @@ class TweetResolver {
           direction: "DESC",
         },
       },
+      take: limit,
     });
 
     if (tweets.length === 0) return [];
@@ -84,7 +85,9 @@ class TweetResolver {
       where: { userId: id },
       relations: ["user", "replies"],
     });
-
+    
+    if(tweets.length === 0) return null;
+    
     return tweets;
   }
 
