@@ -5,7 +5,7 @@ import "../styles/color.css"
 
 
 const client = new ApolloClient({
-  uri: process.env.NEXT_PUBLIC_GQL_URL_PROD || " ",
+  uri: process.env.NEXT_PUBLIC_GQL_URL || " ",
   cache: new InMemoryCache(),
   credentials: "include",
 });
