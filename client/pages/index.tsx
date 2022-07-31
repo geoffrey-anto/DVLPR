@@ -9,6 +9,7 @@ import TrendingList from "../components/LeftPane/TrendingList";
 import { SunIcon } from "@heroicons/react/outline";
 
 export type authStatusType = "registered" | "logged" | null;
+export type themeType = "light" | "dark";
 
 const Home: NextPage = () => {
   const [loginState, setLoginState] = useState<authStatusType>(null);
@@ -16,6 +17,15 @@ const Home: NextPage = () => {
   const [pageStatus, setPageStatus] = useState<"loading" | "loaded">("loading");
   const [sideBarState, setSideBarState] = useState<boolean>(false);
   const [isTweetBoxActive, setIsTweetBoxActive] = useState<boolean>(true);
+  const [theme, setTheme] = useState<themeType>("dark");
+
+  const toggleTheme = () => {
+    if (theme === "dark") {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
+  }
 
   const toggleTweetBox = () => {
     setIsTweetBoxActive(!isTweetBoxActive);
@@ -44,6 +54,7 @@ const Home: NextPage = () => {
   // }, []);
 
   useEffect(() => {
+    localStorage.setItem("theme", theme);
     if (window.screen.width > 768) {
       setIsTweetBoxActive(false);
     } else {
@@ -160,7 +171,7 @@ const Home: NextPage = () => {
               >
                 {loginState === null ? "Sign In" : "Sign Out"}
               </button>
-              <SunIcon className="w-8 h-8 text-textWhiteH" />
+              <SunIcon onClick={toggleTheme} className="w-8 h-8 text-textWhiteH" />
             </div>
             <div className="w-full h-[90%]">
               <TrendingList />
