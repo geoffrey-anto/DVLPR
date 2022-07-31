@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from "@heroicons/react/outline";
 import React from "react";
 import Feed from "../Feed/Feed";
-import { Data, Tweet } from "../TweetFeed";
+import { Data, Tweet } from "../Feed/TweetFeed";
 
 interface Props {
     idx: number;
