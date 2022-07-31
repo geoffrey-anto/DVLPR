@@ -6,7 +6,7 @@ import {
 } from "@apollo/client";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import toast from "react-hot-toast";
-import { Tweet } from "../TweetFeed";
+import { Tweet } from "../Feed/TweetFeed";
 
 interface Props {
   setIsReplyActive: (value: boolean) => void;
