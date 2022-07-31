@@ -119,3 +119,13 @@ export const GET_REPLY_FOR_TWEET = gql`
     }
   }
 `;
+
+export const GET_USER = gql`
+  query ($getUserById: Float!) {
+    getUserById(id: $getUserById) {
+      id
+      name
+      username
+    }
+  }
+`;

@@ -7,14 +7,14 @@ import {
 } from "@heroicons/react/outline";
 import React, { useEffect } from "react";
 import { Tweet } from "./TweetFeed";
-import { GET_ALL_TWEETS, LIKE_TWEET } from "../graphql/Query";
+import { GET_ALL_TWEETS, LIKE_TWEET } from "../../graphql/Query";
 import { useMutation } from "@apollo/client";
 import Link from "next/link";
-import { REPLY_FOR_TWEET, RETWEET_TWEET } from "../graphql/Mutation";
+import { REPLY_FOR_TWEET, RETWEET_TWEET } from "../../graphql/Mutation";
 import toast, { Toaster } from "react-hot-toast";
-import { formatDate } from "../utils/FormatDate";
-import { Reply } from "./SubComponents/Reply";
-import { getFirstXWords, getWordCount } from "../utils/GetWordCount";
+import { formatDate } from "../../utils/FormatDate";
+import { Reply } from "../SubComponents/Reply";
+import { getFirstXWords, getWordCount } from "../../utils/GetWordCount";
 
 function Feed({
   tweet,

@@ -2,9 +2,9 @@ import { useQuery } from "@apollo/client";
 import { Jelly } from "@uiball/loaders";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { GET_TOP_TWEETS, GET_TOP_USERS } from "../graphql/Query";
+import { GET_TOP_TWEETS, GET_TOP_USERS } from "../../graphql/Query";
 
-const TrendintList = () => {
+const TrendingList = () => {
   const [maxRows, setMaxRows] = useState(7);
 
   useEffect(() => {
@@ -134,4 +134,4 @@ const TrendintList = () => {
   );
 };
 
-export default TrendintList;
+export default TrendingList;

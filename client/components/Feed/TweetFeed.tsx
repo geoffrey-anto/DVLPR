@@ -7,10 +7,10 @@ import {
 import { ArrowUpIcon, ChevronDownIcon } from "@heroicons/react/outline";
 import { Jelly } from "@uiball/loaders";
 import { useEffect, useState } from "react";
-import { GET_ALL_TWEETS } from "../graphql/Query";
-import Error from "./ErrorComponents/Error";
-import Loading from "./LoadingComponents/Loading";
-import Tweet from "./SubComponents/Tweet";
+import { GET_ALL_TWEETS } from "../../graphql/Query";
+import Error from "../ErrorComponents/Error";
+import Loading from "../LoadingComponents/Loading";
+import Tweet from "../SubComponents/Tweet";
 import TweetBox from "./TweetBox";
 
 interface User {

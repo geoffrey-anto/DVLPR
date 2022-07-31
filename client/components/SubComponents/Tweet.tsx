@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from "@heroicons/react/outline";
 import React from "react";
-import Feed from "../Feed";
+import Feed from "../Feed/Feed";
 import { Data, Tweet } from "../TweetFeed";
 
 interface Props {

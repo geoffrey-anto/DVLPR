@@ -9,7 +9,7 @@ import {
 import { DesktopComputerIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import NavComponent from "./NavComponent";
-import TweetButton from "./TweetButton";
+import TweetButton from "../Feed/TweetButton";
 
 interface Props {
   userDetails: any;

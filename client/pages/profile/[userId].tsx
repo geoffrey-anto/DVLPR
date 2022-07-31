@@ -3,14 +3,14 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import SideBar from "../../components/SideBar";
+import SideBar from "../../components/SideBar/SideBar";
 import { CHANGE_USER_NAME, CHANGE_USER_PASSWORD } from "../../graphql/Mutation";
-import { GET_TWEETS_FOR_USER } from "../../graphql/Query";
+import { GET_TWEETS_FOR_USER, GET_USER } from "../../graphql/Query";
 import { checkPasswordChangeInputs } from "../../utils/CheckPasswordChangeInputs";
 import Loading from "../../components/LoadingComponents/Loading";
 import Back from "../../components/SubComponents/Back";
 import UserProfile from "../../components/SubComponents/UserProfile";
-import LeftPane from "../../components/LeftPane";
+import LeftPane from "../../components/LeftPane/LeftPane";
 import NoUser from "../../components/SubComponents/NoUser";
 import UserMenu from "../../components/SubComponents/UserMenu";
 import UserProfileTweetFeed from "../../components/SubComponents/UserProfileTweetFeed";
@@ -39,6 +39,12 @@ const Index = () => {
   const { data, loading } = useQuery(GET_TWEETS_FOR_USER, {
     variables: {
       getTweetsForUserId: parseFloat(uId as string),
+    },
+  });
+
+  const { data: userData, loading: userLoading } = useQuery(GET_USER, {
+    variables: {
+      getUserById: parseFloat(uId as string),
     },
   });
 
@@ -151,12 +157,10 @@ const Index = () => {
       signOut();
     }
   }, []);
-  if (loading) {
+
+  if (userLoading) {
     return <Loading />;
-  } else if (
-    data?.getTweetsForUser === null ||
-    data?.getTweetsForUser === undefined
-  ) {
+  } else if (userData?.getUserById === null) {
     return (
       <>
         <Head>
@@ -165,6 +169,8 @@ const Index = () => {
         <NoUser />
       </>
     );
+  } else if (loading) {
+    return <Loading />;
   } else
     return (
       <>
@@ -198,7 +204,7 @@ const Index = () => {
                     <>
                       <div className="bg-gray100 w-full h-[25%]"></div>
                       <div className="flex flex-col w-full items-center justify-center mb-4">
-                        <UserProfile data={data} />
+                        <UserProfile data={userData?.getUserById} />
                         {(() => {
                           if (
                             parseFloat(data?.getTweetsForUser[0]?.user?.id) ===
@@ -224,11 +230,16 @@ const Index = () => {
                           }
                         })()}
                       </div>
-                      <UserProfileTweetFeed
-                        data={data}
-                        isReplyActive={isReplyActive}
-                        setIsReplyActive={setIsReplyActive}
-                      />
+                      {(() => {
+                        return (
+                          <UserProfileTweetFeed
+                            isVisible={data.getTweetsForUser.length > 0}
+                            data={data}
+                            isReplyActive={isReplyActive}
+                            setIsReplyActive={setIsReplyActive}
+                          />
+                        );
+                      })()}
                     </>
                   );
                 }

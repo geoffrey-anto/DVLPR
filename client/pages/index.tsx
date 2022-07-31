@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import {  useEffect, useState } from "react";
-import LoginAuthPrompt from "../components/LoginAuthPrompt";
-import RegisterAuthPrompt from "../components/RegisterAuthPrompt";
-import SideBar from "../components/SideBar";
-import TweetFeed from "../components/TweetFeed";
-import TrendingList from "../components/TrendingList";
+import { useEffect, useState } from "react";
+import LoginAuthPrompt from "../components/AuthComponents/LoginAuthPrompt";
+import RegisterAuthPrompt from "../components/AuthComponents/RegisterAuthPrompt";
+import SideBar from "../components/SideBar/SideBar";
+import TweetFeed from "../components/Feed/TweetFeed";
+import TrendingList from "../components/LeftPane/TrendingList";
 import { SunIcon } from "@heroicons/react/outline";
 
 export type authStatusType = "registered" | "logged" | null;
@@ -44,6 +44,11 @@ const Home: NextPage = () => {
   // }, []);
 
   useEffect(() => {
+    if (window.screen.width > 768) {
+      setIsTweetBoxActive(false);
+    } else {
+      setIsTweetBoxActive(true);
+    }
     window.addEventListener("resize", () => {
       if (window.screen.availWidth < 768) {
         setIsTweetBoxActive(true);

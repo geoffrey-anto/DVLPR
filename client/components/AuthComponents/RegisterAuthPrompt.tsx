@@ -1,8 +1,8 @@
 import { useMutation } from "@apollo/client";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import { MouseEvent, useState } from "react";
-import { REGISTER_USER } from "../graphql/Mutation";
-import { authStatusType } from "../pages";
+import { REGISTER_USER } from "../../graphql/Mutation";
+import { authStatusType } from "../../pages";
 
 // TRANSFER THE AUTH LOGIC FROM INDEX.TSX TO AUTHPROMPT.TSX AND ALSO IMPLEMENT THE SAME FOR lOGIN USER WITH ID NAME
 

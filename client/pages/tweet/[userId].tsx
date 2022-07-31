@@ -5,7 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Feed from "../../components/Feed";
+import Feed from "../../components/Feed/Feed";
 import { GET_REPLY_FOR_TWEET, GET_TWEET_BY_ID } from "../../graphql/Query";
 
 function Home() {

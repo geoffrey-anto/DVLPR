@@ -2,12 +2,9 @@ import React from "react";
 
 interface Props {
     data: {
-        getTweetsForUser: {
-            user: {
-                name: string,
-                username: string,
-            }  
-        }[]
+      id: number;
+      username: string;
+      name: string;
     }
 }
 
@@ -21,14 +18,12 @@ const UserProfile = ({data}: Props) => {
       <div className="w-full relative -top-6">
         <div className="bg- w-[110%] flex flex-col items-center justify-center">
           <p className="text-textWhiteH font-semibold text-lg">
-            {data?.getTweetsForUser
-              ? data?.getTweetsForUser[0]?.user?.name
+            {data?.name ? data?.name
               : ""}
           </p>
           <p className="text-accentGray font-semibold text-lg">
             @
-            {data?.getTweetsForUser
-              ? data?.getTweetsForUser[0]?.user?.username
+            {data?.username ? data?.username
               : ""}
           </p>
         </div>

@@ -9,8 +9,8 @@ import {
 } from "@heroicons/react/outline";
 import { ChangeEvent, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { ADD_TWEET } from "../graphql/Mutation";
-import { GET_ALL_TWEETS } from "../graphql/Query";
+import { ADD_TWEET } from "../../graphql/Mutation";
+import { GET_ALL_TWEETS } from "../../graphql/Query";
 import TweetButton from "./TweetButton";
 import Compressor from "compressorjs";
 

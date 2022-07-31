@@ -2,8 +2,8 @@ import { useMutation } from "@apollo/client";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { LOGIN_USER_WITH_ID_NAME } from "../graphql/Mutation";
-import { authStatusType } from "../pages";
+import { LOGIN_USER_WITH_ID_NAME } from "../../graphql/Mutation";
+import { authStatusType } from "../../pages";
 
 function LoginAuthPrompt({
   style,
@@ -29,7 +29,6 @@ function LoginAuthPrompt({
         },
       },
     });
-    console.log(response)
     if (response.data.Login !== null) {
       localStorage.setItem("authId", response.data.Login.id);
       localStorage.setItem("authUserName", response.data.Login.name);

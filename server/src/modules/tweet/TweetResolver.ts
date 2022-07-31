@@ -86,7 +86,7 @@ class TweetResolver {
       relations: ["user", "replies"],
     });
     
-    if(tweets.length === 0) return null;
+    if(tweets.length === 0) return [];
     
     return tweets;
   }
