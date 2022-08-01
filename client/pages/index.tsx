@@ -9,6 +9,7 @@ import TrendingList from "../components/LeftPane/TrendingList";
 import { SunIcon } from "@heroicons/react/outline";
 
 export type authStatusType = "registered" | "logged" | null;
+export type ThemeType = "light" | "dark";
 
 const Home: NextPage = () => {
   const [loginState, setLoginState] = useState<authStatusType>(null);
@@ -16,6 +17,16 @@ const Home: NextPage = () => {
   const [pageStatus, setPageStatus] = useState<"loading" | "loaded">("loading");
   const [sideBarState, setSideBarState] = useState<boolean>(false);
   const [isTweetBoxActive, setIsTweetBoxActive] = useState<boolean>(true);
+  const [theme, setTheme] = useState<ThemeType>("dark");
+
+  const toggleTheme = () => {
+    if (theme === "dark") {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
+    localStorage.setItem("theme", theme === "dark" ? "light" : "dark");
+  };
 
   const toggleTweetBox = () => {
     setIsTweetBoxActive(!isTweetBoxActive);
@@ -44,6 +55,11 @@ const Home: NextPage = () => {
   // }, []);
 
   useEffect(() => {
+    const theme_ = localStorage.getItem("theme");
+    if (theme_) {
+      setTheme(theme_ as ThemeType);
+    }
+    setIsTweetBoxActive(true);
     if (window.screen.width > 768) {
       setIsTweetBoxActive(false);
     } else {
@@ -84,7 +100,13 @@ const Home: NextPage = () => {
         <Head>
           <title>Dvlpr</title>
         </Head>
-        <div className="p-0 m-0 h-screen w-screen bg-black flex flex-row overflow-y-hidden">
+        <div
+          className={
+            theme === "dark"
+              ? "bg-black p-0 m-0 h-screen w-screen flex flex-row overflow-y-hidden select-none"
+              : "bg-textWhiteH p-0 m-0 h-screen w-screen flex flex-row overflow-y-hidden select-none"
+          }
+        >
           {(() => {
             if (loginState === null) {
               return (
@@ -114,6 +136,7 @@ const Home: NextPage = () => {
           })()}
 
           <SideBar
+          theme={theme}
             isMobile={false}
             containerStyle={undefined}
             userDetails={userData}
@@ -124,8 +147,15 @@ const Home: NextPage = () => {
               return null;
             } else {
               return (
-                <div className="absolute w-[50%] sm:w-[40%] h-full bg-black z-50 md:hidden">
+                <div
+                  className={
+                    theme === "dark"
+                      ? "absolute w-[50%] sm:w-[40%] h-full bg-black z-50 md:hidden"
+                      : "absolute w-[50%] sm:w-[40%] h-full bg-textWhiteH z-50 md:hidden"
+                  }
+                >
                   <SideBar
+                    theme={theme}
                     isMobile={true}
                     containerStyle={
                       "flex flex-col md:hidden h-full border-r-2 border-gray100 font-mono"
@@ -138,6 +168,7 @@ const Home: NextPage = () => {
             }
           })()}
           <TweetFeed
+            theme={theme}
             isOpen={isTweetBoxActive}
             openDrawer={(val: boolean) => {
               if (val) {
@@ -149,7 +180,11 @@ const Home: NextPage = () => {
             <div className="w-[100%] h-[10%] flex items-center justify-evenly">
               <button
                 placeholder="SignIn"
-                className="w-48 h-12 rounded-2xl border-2 border-textWhiteH text-textWhite"
+                className={
+                  theme === "dark"
+                    ? "w-48 h-12 rounded-2xl border-2 border-textWhiteH text-textWhite"
+                    : "w-48 h-12 rounded-2xl border-2 border-black text-black"
+                }
                 onClick={() => {
                   setLoginState("registered");
                   localStorage.removeItem("authId");
@@ -160,10 +195,13 @@ const Home: NextPage = () => {
               >
                 {loginState === null ? "Sign In" : "Sign Out"}
               </button>
-              <SunIcon className="w-8 h-8 text-textWhiteH" />
+              <SunIcon
+                onClick={toggleTheme}
+                className={theme === "dark" ? "w-8 h-8 text-textWhiteH" : "w-8 h-8 text-black"}
+              />
             </div>
             <div className="w-full h-[90%]">
-              <TrendingList />
+              <TrendingList theme={theme}/>
             </div>
           </div>
         </div>

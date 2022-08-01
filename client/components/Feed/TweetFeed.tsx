@@ -8,6 +8,8 @@ import { ArrowUpIcon, ChevronDownIcon } from "@heroicons/react/outline";
 import { Jelly } from "@uiball/loaders";
 import { useEffect, useState } from "react";
 import { GET_ALL_TWEETS } from "../../graphql/Query";
+import { ThemeType } from "../../pages";
+import { IsDarkMode } from "../../utils/IsDarkMode";
 import Error from "../ErrorComponents/Error";
 import Loading from "../LoadingComponents/Loading";
 import Tweet from "../SubComponents/Tweet";
@@ -42,9 +44,11 @@ export interface Data {
 function TweetFeed({
   openDrawer,
   isOpen,
+  theme,
 }: {
   openDrawer: (val: boolean) => void;
   isOpen: boolean;
+  theme: ThemeType;
 }) {
   const {
     loading,
@@ -96,16 +100,18 @@ function TweetFeed({
   };
 
   return (
-    <div className="bg-black w-full md:w-[50%] lg:w-[55%] xl:w-[58%] border border-r-gray100 overflow-y-scroll scrollbar-thin scrollbar-thumb-twitterBlue scrollbar-track-black h-auto">
+    <div className={IsDarkMode(theme) ? "bg-black w-full md:w-[50%] lg:w-[55%] xl:w-[58%] border border-r-gray100 overflow-y-scroll scrollbar-thin scrollbar-thumb-twitterBlue scrollbar-track-black h-auto" : "bg-textWhiteH w-full md:w-[50%] lg:w-[55%] xl:w-[58%] border border-r-gray100 overflow-y-scroll scrollbar-thin scrollbar-thumb-twitterBlue scrollbar-track-textWhiteH h-auto"}>
       {isOpen ? (
         <div className="flex md:sticky top-6 px-8">
-          <TweetBox openDrawer={openDrawer} />
+          <TweetBox theme={theme} openDrawer={openDrawer} />
         </div>
       ) : null}
       <div
         className={
           visible
-            ? "absolute bottom-12 left-[65%] bg-black text-textWhiteH cursor-pointer w-14 h-14 rounded-lg border-4 border-textWhite"
+            ? IsDarkMode(theme)
+              ? "absolute bottom-12 left-[65%] bg-black text-textWhiteH cursor-pointer w-14 h-14 rounded-lg border-4 border-textWhite"
+              : "absolute bottom-12 left-[65%] bg-black text-textWhiteH cursor-pointer w-14 h-14 rounded-lg border-4 border-textWhite"
             : "hidden"
         }
       >
@@ -115,7 +121,13 @@ function TweetFeed({
         {(() => {
           if (loading) {
             return (
-              <div className="text-textWhiteH absolute top-[70%] ml-auto right-1/2 text-2xl">
+              <div
+                className={
+                  IsDarkMode(theme)
+                    ? "text-textWhiteH absolute top-[70%] ml-auto right-1/2 text-2xl"
+                    : "text-black absolute top-[70%] ml-auto right-1/2 text-2xl"
+                }
+              >
                 <Jelly color={"#1D9BF0"} size={50} />
               </div>
             );
@@ -138,17 +150,24 @@ function TweetFeed({
                         tweet={tweet}
                         isReplyActive={isReplyActive}
                         setIsReplyActive={setIsReplyActive}
+                        theme={theme}
                       />
                     );
                   })}
                 </div>
                 {loading ? (
-                  <Loading />
+                  <Loading
+                    theme={theme}
+                  />
                 ) : (
                   <div className="flex items-center justify-center w-full h-20">
                     <div
                       onClick={refetchMoreTweet}
-                      className="flex items-center justify-center cursor-pointer text-textWhiteH hover:text-twitterBlue "
+                      className={
+                        IsDarkMode(theme)
+                          ? "flex items-center justify-center cursor-pointer text-textWhiteH hover:text-twitterBlue "
+                          : "flex items-center justify-center cursor-pointer text-black hover:text-twitterBlue"
+                      }
                     >
                       <p className="text-xl">Load More&nbsp;&nbsp;</p>
                       <div className="mt-1 w-8 h-8">

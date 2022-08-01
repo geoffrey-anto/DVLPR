@@ -1,14 +1,17 @@
 import React from "react";
+import { ThemeType } from "../../pages";
+import { IsDarkMode } from "../../utils/IsDarkMode";
 
 interface Props {
     data: {
       id: number;
       username: string;
       name: string;
-    }
+    };
+    theme: ThemeType;
 }
 
-const UserProfile = ({data}: Props) => {
+const UserProfile = ({data, theme}: Props) => {
   return (
     <div>
       <img
@@ -17,7 +20,7 @@ const UserProfile = ({data}: Props) => {
       />
       <div className="w-full relative -top-6">
         <div className="bg- w-[110%] flex flex-col items-center justify-center">
-          <p className="text-textWhiteH font-semibold text-lg">
+          <p className={IsDarkMode(theme) ? "text-textWhiteH font-semibold text-lg" : "text-black font-semibold text-lg"}>
             {data?.name ? data?.name
               : ""}
           </p>

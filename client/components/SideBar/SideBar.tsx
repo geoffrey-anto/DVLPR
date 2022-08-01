@@ -10,12 +10,15 @@ import { DesktopComputerIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import NavComponent from "./NavComponent";
 import TweetButton from "../Feed/TweetButton";
+import { IsDarkMode } from "../../utils/IsDarkMode";
+import { ThemeType } from "../../pages";
 
 interface Props {
   userDetails: any;
   containerStyle: string | undefined;
   isMobile: boolean;
   openTweetBox: () => void;
+  theme: ThemeType;
 }
 
 const SideBar = ({
@@ -23,6 +26,7 @@ const SideBar = ({
   containerStyle,
   isMobile,
   openTweetBox,
+  theme,
 }: Props) => {
   return (
     <div
@@ -46,7 +50,7 @@ const SideBar = ({
           } else {
             return (
               <Link href={"/"}>
-                <div className="h-full w-full flex flex-row justify-evenly items-center text-textWhiteH">
+                <div className={theme === "dark" ? "h-full w-full flex flex-row justify-evenly items-center text-textWhiteH" : "h-full w-full flex flex-row justify-evenly items-center text-black"}>
                   <div className="w-10 h-10 md:w-12 md:h-12">
                     <DesktopComputerIcon />
                   </div>
@@ -66,32 +70,32 @@ const SideBar = ({
         <div className="w-full h-[75%] flex flex-col item-start justify-around">
           <Link href={"/"}>
             <a className="mb-2">
-              <NavComponent Component={HomeIcon} text="Home" />
+              <NavComponent theme={theme} Component={HomeIcon} text="Home" />
             </a>
           </Link>
           <Link href={"/"}>
             <a>
-              <NavComponent Component={HashtagIcon} text="Hashtags" />
+              <NavComponent theme={theme} Component={HashtagIcon} text="Hashtags" />
             </a>
           </Link>
           <Link href={"/"}>
             <a>
-              <NavComponent Component={BellIcon} text="Alerts" />
+              <NavComponent theme={theme} Component={BellIcon} text="Alerts" />
             </a>
           </Link>
           <Link href={"/"}>
             <a>
-              <NavComponent Component={InboxIcon} text="Messages" />
+              <NavComponent theme={theme} Component={InboxIcon} text="Messages" />
             </a>
           </Link>
           <Link href={"/"}>
             <a>
-              <NavComponent Component={BookmarkIcon} text="Bookmarks" />
+              <NavComponent theme={theme} Component={BookmarkIcon} text="Bookmarks" />
             </a>
           </Link>
           <Link href={"/profile/" + userDetails?.id}>
             <a>
-              <NavComponent Component={UserIcon} text="Profile" />
+              <NavComponent theme={theme} Component={UserIcon} text="Profile" />
             </a>
           </Link>
         </div>
@@ -111,10 +115,10 @@ const SideBar = ({
           className="rounded-full hidden md:flex md:h-[40%]"
         />
         <div className="flex flex-col justify-evenly items-start">
-          <p className="text-textWhiteH text-sm lg:text-lg font-bold">
+          <p className={IsDarkMode(theme) ? "text-textWhiteH text-sm lg:text-lg font-bold" : "text-black text-sm lg:text-lg font-bold"}>
             @{userDetails?.username || ""}
           </p>
-          <p className="text-textWhiteH text-sm lg:text-md">
+          <p className={IsDarkMode(theme) ? "text-textWhiteH text-sm lg:text-md" : "text-black text-sm lg:text-md"}>
             {userDetails?.name || ""}
           </p>
         </div>

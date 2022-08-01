@@ -1,5 +1,6 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import React from "react";
+import { ThemeType } from "../../pages";
 
 interface Props {
   setPasswordActiveField: (value: boolean) => void;
@@ -20,6 +21,7 @@ interface Props {
     newUserName: string,
     email: string
   ) => void;
+  theme: ThemeType;
 }
 
 const UserMenu = ({
@@ -33,7 +35,8 @@ const UserMenu = ({
   setPasswordActiveField,
   setPasswords,
   setUsernameActiveField,
-  usernameActiveField
+  usernameActiveField,
+  theme
 }: Props) => {
   return (
     <div className="w-full h-fit flex flex-row items-center justify-center space-x-8 flex-wrap">
