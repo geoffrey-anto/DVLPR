@@ -6,7 +6,7 @@ import "../styles/color.css";
 function MyApp({ Component, pageProps }: AppProps) {
 
   const graphqlClient = new ApolloClient({
-    uri: process.env.NEXT_PUBLIC_GQL_URL || " ",
+    uri: process.env.NEXT_PUBLIC_GQL_URL_PROD || " ",
     cache: new InMemoryCache(),
     credentials: "include",
   });
