@@ -13,8 +13,10 @@ import { ADD_TWEET } from "../../graphql/Mutation";
 import { GET_ALL_TWEETS } from "../../graphql/Query";
 import TweetButton from "./TweetButton";
 import Compressor from "compressorjs";
+import { IsDarkMode } from "../../utils/IsDarkMode";
+import { ThemeType } from "../../pages";
 
-function TweetBox({ openDrawer }: { openDrawer: (val: boolean) => void }) {
+function TweetBox({ openDrawer, theme }: { openDrawer: (val: boolean) => void; theme: ThemeType }) {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<string | null>("");
   const [isImageSeleted, setIsImageSeleted] = useState(false);
@@ -88,9 +90,9 @@ function TweetBox({ openDrawer }: { openDrawer: (val: boolean) => void }) {
   }
 
   return (
-    <div className="bg-black w-full h-fit pb-4 rounded-lg border-2 border-textWhiteH">
+    <div className={IsDarkMode(theme) ? "bg-black w-full h-fit pb-4 rounded-lg border-2 border-textWhiteH" : "bg-textWhiteH w-full h-fit pb-4 rounded-lg border-2 border-black"}>
       <Toaster />
-      <div className="w-full sm:w-full flex flex-row items-center justify-between text-textWhiteH px-8 py-4 ">
+      <div className={IsDarkMode(theme) ? "w-full sm:w-full flex flex-row items-center justify-between text-textWhiteH px-8 py-4 " : "w-full sm:w-full flex flex-row items-center justify-between text-black px-8 py-4 "}>
         <p className="text-2xl font-bold">Home</p>
         <div className="hidden z-50 w-[40px] md:flex sm:h-10 sm:w-10">
           <StarIcon
@@ -120,11 +122,11 @@ function TweetBox({ openDrawer }: { openDrawer: (val: boolean) => void }) {
               value={description}
               style={{ textTransform: "capitalize" }}
               onChange={(e) => setDescription(e.target.value)}
-              className="bg-black w-full h-14 lg:h-16 text-textWhiteH border-textWhiteH border-b-2 font-semibold text-lg focus:outline-none focus:border-b-textWhiteH caret-twitterBlue px-4"
+              className={IsDarkMode(theme) ? "bg-black w-full h-14 lg:h-16 border-textWhiteH border-b-2 font-semibold text-lg focus:outline-none focus:border-b-textWhiteH caret-twitterBlue px-4" : "w-full h-14 lg:h-16 border-black border-b-2 font-semibold text-lg focus:outline-none focus:border-b-black caret-twitterBlue px-4"}
             />
             <div className="flex items-center justify-between">
               <div
-                className={"h-fit w-fit flex flex-row text-textWhiteH gap-1"}
+                className={IsDarkMode(theme) ? "h-fit w-fit flex flex-row gap-1 text-textWhiteH" : "h-fit w-fit flex flex-row gap-1 text-black"}
               >
                 <div
                   className={

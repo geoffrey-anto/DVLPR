@@ -3,8 +3,10 @@ import { Jelly } from "@uiball/loaders";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { GET_TOP_TWEETS, GET_TOP_USERS } from "../../graphql/Query";
+import { ThemeType } from "../../pages";
+import { IsDarkMode } from "../../utils/IsDarkMode";
 
-const TrendingList = () => {
+const TrendingList = ({theme}: {theme: ThemeType}) => {
   const [maxRows, setMaxRows] = useState(7);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ const TrendingList = () => {
   });
 
   return (
-    <div className="w-full h-full text-textWhiteH">
+    <div className={IsDarkMode(theme) ? "w-full h-full text-textWhiteH" : "w-full h-full text-black"}>
       {/* Trending Users */}
       <div className="w-full h-1/2 overflow-visible pt-2 flex flex-col mb-2">
         <p className="w-full text-center mb-4 font-bold text-2xl text-">

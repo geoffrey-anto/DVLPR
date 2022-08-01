@@ -14,6 +14,8 @@ import LeftPane from "../../components/LeftPane/LeftPane";
 import NoUser from "../../components/SubComponents/NoUser";
 import UserMenu from "../../components/SubComponents/UserMenu";
 import UserProfileTweetFeed from "../../components/SubComponents/UserProfileTweetFeed";
+import { ThemeType } from "..";
+import { IsDarkMode } from "../../utils/IsDarkMode";
 
 const Index = () => {
   const uId = useRouter().query.userId;
@@ -25,6 +27,8 @@ const Index = () => {
   const [passwordActiveField, setPasswordActiveField] = React.useState(false);
 
   const [isReplyActive, setIsReplyActive] = React.useState(false);
+
+  const [theme, setTheme] = useState<ThemeType>("dark");
 
   const [passwords, setPasswords] = React.useState<{
     oldPassword: string;
@@ -127,6 +131,10 @@ const Index = () => {
   };
 
   useEffect(() => {
+    const theme_ = localStorage.getItem("theme");
+    if (theme_) {
+      setTheme(theme_ as ThemeType);
+    }
     const authId = localStorage.getItem("authId");
     const authUserName = localStorage.getItem("authUserName");
     const authName = localStorage.getItem("authName");
@@ -159,7 +167,7 @@ const Index = () => {
   }, []);
 
   if (userLoading) {
-    return <Loading />;
+    return <Loading theme={theme} />;
   } else if (userData?.getUserById === null) {
     return (
       <>
@@ -170,7 +178,7 @@ const Index = () => {
       </>
     );
   } else if (loading) {
-    return <Loading />;
+    return <Loading theme={theme} />;
   } else
     return (
       <>
@@ -182,12 +190,17 @@ const Index = () => {
         <div
           className={
             usernameActiveField
-              ? "overflow-hidden w-screen h-screen bg-black flex opacity-100"
-              : "overflow-hidden w-screen h-screen bg-black flex"
+              ? IsDarkMode(theme)
+                ? "overflow-hidden w-screen h-screen bg-black flex opacity-100 select-none"
+                : "overflow-hidden w-screen h-screen bg-textWhiteH flex opacity-100 select-none"
+              : IsDarkMode(theme)
+              ? "overflow-hidden w-screen h-screen bg-black flex select-none"
+              : "overflow-hidden w-screen h-screen bg-textWhiteH flex select-none"
           }
         >
           <Toaster />
           <SideBar
+            theme={theme}
             containerStyle={undefined}
             isMobile={false}
             userDetails={userDetails}
@@ -198,13 +211,16 @@ const Index = () => {
               <Back />
               {(() => {
                 if (loading) {
-                  return <Loading />;
+                  return <Loading theme={theme} />;
                 } else {
                   return (
                     <>
                       <div className="bg-gray100 w-full h-[25%]"></div>
                       <div className="flex flex-col w-full items-center justify-center mb-4">
-                        <UserProfile data={userData?.getUserById} />
+                        <UserProfile
+                          theme={theme}
+                          data={userData?.getUserById}
+                        />
                         {(() => {
                           if (
                             parseFloat(data?.getTweetsForUser[0]?.user?.id) ===
@@ -212,6 +228,7 @@ const Index = () => {
                           ) {
                             return (
                               <UserMenu
+                                theme={theme}
                                 changePasswordHandler={changePasswordHandler}
                                 changeUserNameHandler={changeUserNameHandler}
                                 data={data}
@@ -232,12 +249,21 @@ const Index = () => {
                       </div>
                       {(() => {
                         return (
-                          <UserProfileTweetFeed
-                            isVisible={data.getTweetsForUser.length > 0}
-                            data={data}
-                            isReplyActive={isReplyActive}
-                            setIsReplyActive={setIsReplyActive}
-                          />
+                          <div
+                            className={
+                              IsDarkMode(theme)
+                                ? "bg-black overflow-y-scroll h-full scrollbar-hide"
+                                : "bg-textWhiteH overflow-y-scroll h-full scrollbar-hide"
+                            }
+                          >
+                            <UserProfileTweetFeed
+                              theme={theme}
+                              isVisible={data.getTweetsForUser.length > 0}
+                              data={data}
+                              isReplyActive={isReplyActive}
+                              setIsReplyActive={setIsReplyActive}
+                            />
+                          </div>
                         );
                       })()}
                     </>
@@ -247,8 +273,15 @@ const Index = () => {
             </div>
             {<div className="overflow-y-scroll scrollbar-hide"></div>}
           </div>
-
-          <LeftPane signOut={signOut} />
+          <LeftPane
+            toggleTheme={() => {
+              setTheme(theme === "light" ? "dark" : "light");
+              localStorage.setItem("theme", theme === "light" ? "dark" : "light");
+              console.log(theme)
+            }}
+            theme={theme}
+            signOut={signOut}
+          />
         </div>
       </>
     );

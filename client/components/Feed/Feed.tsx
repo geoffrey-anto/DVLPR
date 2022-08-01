@@ -15,15 +15,19 @@ import toast, { Toaster } from "react-hot-toast";
 import { formatDate } from "../../utils/FormatDate";
 import { Reply } from "../SubComponents/Reply";
 import { getFirstXWords, getWordCount } from "../../utils/GetWordCount";
+import { ThemeType } from "../../pages";
+import { IsDarkMode } from "../../utils/IsDarkMode";
 
 function Feed({
   tweet,
   style,
   replyCount,
+  theme,
 }: {
   tweet: Tweet;
   style: string | undefined;
   replyCount: number | undefined;
+  theme: ThemeType;
 }) {
   const [likeTweet, { loading }] = useMutation(LIKE_TWEET, {
     refetchQueries: [{ query: GET_ALL_TWEETS }, "getAllTweets"],
@@ -76,14 +80,14 @@ function Feed({
     <div
       className={
         style ||
-        "bg-black w-full h-full scrollbar-hide p-4 flex flex-col items-center"
+        (IsDarkMode(theme) ? "bg-black w-full h-full scrollbar-hide p-4 flex flex-col items-center text-textWhiteH" : "bg-textWhiteH w-full h-full scrollbar-hide p-4 flex flex-col items-center text-black")
       }
     >
       <Toaster />
       <div className="w-full h-auto flex flex-row items-center justify-between px-4 font-mono">
         {/* // Profile/Name */}
         <Link href={"/profile/" + tweet?.user?.id}>
-          <div className="text-textWhiteH w-fit flex flex-row items-center justify-start gap-4 cursor-pointer">
+          <div className={IsDarkMode(theme) ? "w-fit flex flex-row items-center justify-start gap-4 cursor-pointer text-textWhiteH" : "w-fit flex flex-row items-center justify-start gap-4 cursor-pointer text-black"}>
             <img
               className="h-14 w-14 rounded-full"
               src="https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
@@ -93,13 +97,13 @@ function Feed({
         </Link>
 
         {/* // MoreOptions */}
-        <div className="h-8 w-8 text-textWhiteH">
+        <div className="h-8 w-8">
           <DotsHorizontalIcon />
         </div>
       </div>
       <Link href={"/tweet/" + tweet?.id}>
-        <div className="flex flex-col items-center h-[55%]">
-          <div className=" text-textWhiteH flex flex-col p-6 text-lg lg:text-xl font-light lg:font-light font-sans">
+        <div className={IsDarkMode(theme) ? "flex flex-col items-center h-[55%] text-textWhiteH" : "flex flex-col items-center h-[55%] text-black"}>
+          <div className="flex flex-col p-6 text-lg lg:text-xl font-light lg:font-light font-sans">
             {getWordCount(tweet?.description) > 80
               ? getFirstXWords(tweet?.description, 80) + "..."
               : tweet?.description}
@@ -114,14 +118,14 @@ function Feed({
           {formatDate(tweet?.createdAt)} · Twitter Web App
         </p>
       </div>
-      <div className="w-full text-textWhite py-4 border-b-2 border-b-gray100">
+      <div className="w-full py-4 border-b-2 border-b-gray100">
         <div className="w-full md:w-[80%] lg:w-[60%] flex items-center justify-around">
           <p>{tweet?.repostCount === null ? 0 : tweet?.repostCount} Retweets</p>
           <p>{tweet?.replies?.length | (replyCount as number)} Quote Tweets</p>
           <p>{tweet?.likes} Likes</p>
         </div>
       </div>
-      <div className="w-full h-fit mt-4 pb-4 px-8 text-textWhite">
+      <div className="w-full h-fit mt-4 pb-4 px-8">
         <div className="flex flex-row items-center justify-between">
           <div className="h-6 w-6 cursor-pointer">
             <ReplyIcon
@@ -139,6 +143,7 @@ function Feed({
                     tweet={tweet}
                     addReply={addReply}
                     setIsReplyActive={setIsReplyActive}
+                    theme={theme}
                   />
                 );
               }
@@ -146,7 +151,7 @@ function Feed({
           </div>
           <div className="h-6 w-6 cursor-pointer">
             <RefreshIcon
-              className={isRetweeted ? "text-twitterBlue" : "text-textWhite"}
+              className={isRetweeted ? "text-twitterBlue" : (IsDarkMode(theme) ? "text-textWhiteH" : "text-black")}
               onClick={async () => {
                 if (tweet.user && tweet.id) {
                   const resp = await retweetTweet({
@@ -170,12 +175,12 @@ function Feed({
             />
           </div>
           <div className="h-6 w-6 cursor-pointer">
-            <p className="text-textWhiteH"></p>
+            <p className=""></p>
             <HeartIcon
               className={
                 tweet?.likesIds && tweet?.likesIds.indexOf(userId) != -1
                   ? "text-[#F10C45]"
-                  : "text-textWhiteH"
+                  : (IsDarkMode(theme) ? "text-textWhiteH" : "text-black")
               }
               onClick={async () => {
                 setIsLiked(!isLiked);

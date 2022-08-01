@@ -6,6 +6,8 @@ import {
 } from "@apollo/client";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import toast from "react-hot-toast";
+import { ThemeType } from "../../pages";
+import { IsDarkMode } from "../../utils/IsDarkMode";
 import { Tweet } from "../Feed/TweetFeed";
 
 interface Props {
@@ -24,6 +26,7 @@ interface Props {
         >
       | undefined
   ) => Promise<any>;
+  theme: ThemeType;
 }
 
 export const Reply = ({
@@ -33,18 +36,19 @@ export const Reply = ({
   setReplyText,
   tweet,
   addReply,
+  theme,
 }: Props) => {
   return (
-    <div className="z-40 absolute top-[40%] left-[25%] right-[25%] w-[50%] h-[30%] bg-black border-2 border-textWhiteH">
+    <div className={"z-40 absolute top-[40%] left-[25%] right-[25%] w-[50%] h-[30%] bg-black border-2 border-textWhiteH"}>
       <div className="w-full flex items-center">
-        <div className="w-10 h-10 px-2 py-2">
+        <div className="w-10 h-10 px-2 py-2 text-textWhiteH">
           <ArrowLeftIcon
             onClick={() => {
               setIsReplyActive(!isReplyActive);
             }}
           />
         </div>
-        <p className="text-lg font-semibold ml-3">
+        <p className={IsDarkMode(theme) ? "text-lg font-semibold ml-3" : "text-lg font-semibold ml-3 text-textWhiteH"}>
           Reply to {tweet?.user?.username}
         </p>
       </div>
