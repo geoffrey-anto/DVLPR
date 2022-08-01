@@ -36,7 +36,6 @@ const UserMenu = ({
   setPasswords,
   setUsernameActiveField,
   usernameActiveField,
-  theme
 }: Props) => {
   return (
     <div className="w-full h-fit flex flex-row items-center justify-center space-x-8 flex-wrap">
