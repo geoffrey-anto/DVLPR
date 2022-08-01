@@ -1,6 +1,6 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import React from "react";
-import { ThemeType } from "../../pages";
+import { ThemeType } from "../../pages/";
 
 interface Props {
   setPasswordActiveField: (value: boolean) => void;
