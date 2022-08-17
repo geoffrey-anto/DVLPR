@@ -1,5 +1,5 @@
 # Twitter-For-Developers
-A Place For Developers, By Developers For Tweeting About Development (Under Development)
+A Place For Developers, By Developers For Tweeting About Development
 
 ## Run The Project
 - Start Local Postgres Database
